@@ -2,9 +2,27 @@ import '../styles/globals.css';
 import { css, Global } from '@emotion/react';
 import { Grid } from '@mui/material';
 import { AppProps } from 'next/app';
+import { useCallback, useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
+import { User } from '../database/user';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [user, setUser] = useState<User | undefined>();
+
+  const refreshUserProfile = useCallback(async () => {
+    const profileResponse = await fetch('/api/userProfile');
+    const profileResponseBody = await profileResponse.json();
+
+    if ('errors' in profileResponseBody) {
+      setUser(undefined);
+    } else {
+      setUser(profileResponseBody.user);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshUserProfile().catch(() => console.log('fetch api failed'));
+  }, [refreshUserProfile]);
   return (
     <div>
       <Global
@@ -22,13 +40,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             background-color: black;
             color: #b9e25e;
           }
-          /*           body {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 10px;
-            grid-template-areas: 'sidebar main right';
-            height: 100vh;
-          } */
           a:hover {
             font-size: 1.1em;
             transition: font-size ease-in 0.2s;
@@ -37,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <Sidebar />
+          <Sidebar user={user} />
         </Grid>
         <Grid item xs={9}>
           <Component {...pageProps} className="main" />

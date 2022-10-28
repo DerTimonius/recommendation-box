@@ -6,7 +6,6 @@ import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-
 df_combined = pd.read_csv("~/documents/coding/datasets/searchfile.csv")
 
 

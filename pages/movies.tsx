@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Grid } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
 
@@ -27,6 +27,11 @@ const movieStyles = css`
   }
   ul > li + li {
     margin-top: 36px;
+  }
+  .loading-recommendations {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 `;
 
@@ -113,12 +118,24 @@ function Movies() {
                 );
               })}
             </div>
+            <button
+              onClick={() => {
+                setRecommendedMovies([]);
+                setSelectedMovies([]);
+                setSearchResult([]);
+              }}
+            >
+              Get new recommendations!
+            </button>
           </Grid>
         ) : isRecommending ? (
-          <>
-            <h2>Your recommendations are coming</h2>
+          <div className="loading-recommendations">
+            <h2>Getting recommendations!</h2>
+            <hr />
             <p>This might take up to 30 seconds, please be patient.</p>
-          </>
+            <br />
+            <CircularProgress color="inherit" />
+          </div>
         ) : (
           <Grid item xs={9}>
             <div css={movieStyles}>
@@ -136,7 +153,10 @@ function Movies() {
                 <button onClick={handleSearch}>Search</button>
               </div>
               {isSearching ? (
-                <p>Currently searching in our database, please hold!</p>
+                <>
+                  <p>Currently searching in our database, please hold!</p>
+                  <CircularProgress color="inherit" />
+                </>
               ) : null}
               {searchResult.length > 0 ? (
                 <ul className="search-results">
