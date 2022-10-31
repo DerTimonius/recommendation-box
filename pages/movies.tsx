@@ -1,7 +1,11 @@
 import { css } from '@emotion/react';
 import { CircularProgress, Grid } from '@mui/material';
+import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState } from 'react';
+import { getSessionByToken } from '../database/sessions';
+import { createTokenFromSecret } from '../utils/csrf';
 
 const movieStyles = css`
   display: flex;
@@ -52,7 +56,11 @@ export type Movie = {
   index: number;
 };
 export type RecommendedMovie = Movie & { description: string; type: string };
-function Movies() {
+
+type Props =
+  | { errors: { message: string }[]; csrfToken: undefined }
+  | { csrfToken: string };
+export default function Movies(props: Props) {
   const [searchInput, setSearchInput] = useState<string>('');
   const [searchResult, setSearchResult] = useState<Movie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -71,7 +79,10 @@ function Movies() {
       headers: {
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ searchItem: searchInput }),
+      body: JSON.stringify({
+        searchItem: searchInput,
+        csrfToken: props.csrfToken,
+      }),
     });
     const data = await response.json();
     setSearchResult(data.result);
@@ -86,7 +97,10 @@ function Movies() {
       headers: {
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ selectedMovies: selectedMoviesIndex.join(' ') }),
+      body: JSON.stringify({
+        selectedMovies: selectedMoviesIndex.join(' '),
+        csrfToken: props.csrfToken,
+      }),
     });
     const data = await response.json();
     setRecommendedMovies(data.result);
@@ -101,112 +115,136 @@ function Movies() {
           content="Get movie recommendations based on your inputs"
         />
       </Head>
-      <Grid container>
-        {recommendedMovies.length > 0 ? (
-          <Grid item xs={9}>
-            <h2>Your recommendations</h2>
-            <div>
-              {recommendedMovies.map((movie) => {
-                return (
-                  <div key={`recommended movie ${movie.title}`}>
-                    <h4>
-                      {movie.title} ({movie.release_year})
-                    </h4>
-                    <p>{movie.cast}</p>
-                    <p>{movie.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-            <button
-              onClick={() => {
-                setRecommendedMovies([]);
-                setSelectedMovies([]);
-                setSearchResult([]);
-              }}
-            >
-              Get new recommendations!
-            </button>
-          </Grid>
-        ) : isRecommending ? (
-          <div className="loading-recommendations">
-            <h2>Getting recommendations!</h2>
-            <hr />
-            <p>This might take up to 30 seconds, please be patient.</p>
-            <br />
-            <CircularProgress color="inherit" />
-          </div>
-        ) : (
-          <Grid item xs={9}>
-            <div css={movieStyles}>
-              <h1>Discover new entertainment options</h1>
-              <br />
+      {!('errors' in props) ? (
+        <Grid container>
+          {recommendedMovies.length > 0 ? (
+            <Grid item xs={9}>
+              <h2>Your recommendations</h2>
               <div>
-                <input
-                  // label="Search movie/show"
-                  id="search-field"
-                  value={searchInput}
-                  onChange={(event) =>
-                    setSearchInput(event.currentTarget.value)
-                  }
-                />
-                <button onClick={handleSearch}>Search</button>
+                {recommendedMovies.map((movie) => {
+                  return (
+                    <div key={`recommended movie ${movie.title}`}>
+                      <h4>
+                        {movie.title} ({movie.release_year})
+                      </h4>
+                      <p>{movie.cast}</p>
+                      <p>{movie.description}</p>
+                    </div>
+                  );
+                })}
               </div>
-              {isSearching ? (
-                <>
-                  <p>Currently searching in our database, please hold!</p>
-                  <CircularProgress color="inherit" />
-                </>
-              ) : null}
-              {searchResult.length > 0 ? (
-                <ul className="search-results">
-                  {searchResult.map((movie) => {
-                    return (
-                      <li key={`movie_index ${movie.index}`}>
-                        <div>
-                          <h4>
-                            {movie.title} ({movie.release_year})
-                          </h4>
-                          <p>{movie.cast}</p>
-                        </div>
-                        <button
-                          onClick={() =>
-                            setSelectedMovies([...selectedMovies, movie])
-                          }
-                        >
-                          Add to selected movies
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : null}
-              {/* {searchResult ? searchResult.map((movie) => {}) : null} */}
-            </div>
-          </Grid>
-        )}
-        {selectedMovies.length > 0 ? (
-          <Grid item xs={3}>
-            <div css={selectedStyles}>
-              <h3>Selected movies:</h3>
-              {selectedMovies.map((movie) => {
-                return (
-                  <div key={`selected movie ${movie.title}`}>
-                    <h4>
-                      {movie.title} ({movie.release_year})
-                    </h4>
-                  </div>
-                );
-              })}
-              <button onClick={handleRecommendations}>
-                Get recommendations!
+              <button
+                onClick={() => {
+                  setRecommendedMovies([]);
+                  setSelectedMovies([]);
+                  setSearchResult([]);
+                }}
+              >
+                Get new recommendations!
               </button>
+            </Grid>
+          ) : isRecommending ? (
+            <div className="loading-recommendations">
+              <h2>Getting recommendations!</h2>
+              <hr />
+              <p>This might take up to 30 seconds, please be patient.</p>
+              <br />
+              <CircularProgress color="inherit" />
             </div>
-          </Grid>
-        ) : null}
-      </Grid>
+          ) : (
+            <Grid item xs={9}>
+              <div css={movieStyles}>
+                <h1>Discover new entertainment options</h1>
+                <br />
+                <div>
+                  <input
+                    // label="Search movie/show"
+                    id="search-field"
+                    value={searchInput}
+                    onChange={(event) =>
+                      setSearchInput(event.currentTarget.value)
+                    }
+                  />
+                  <button onClick={handleSearch}>Search</button>
+                </div>
+                {isSearching ? (
+                  <>
+                    <p>Currently searching in our database, please hold!</p>
+                    <CircularProgress color="inherit" />
+                  </>
+                ) : searchResult.length > 0 ? (
+                  <ul className="search-results">
+                    {searchResult.map((movie) => {
+                      return (
+                        <li key={`movie_index ${movie.index}`}>
+                          <div>
+                            <h4>
+                              {movie.title} ({movie.release_year})
+                            </h4>
+                            <p>{movie.cast}</p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              setSelectedMovies([...selectedMovies, movie])
+                            }
+                          >
+                            Add to selected movies
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+                {/* {searchResult ? searchResult.map((movie) => {}) : null} */}
+              </div>
+            </Grid>
+          )}
+          {selectedMovies.length > 0 ? (
+            <Grid item xs={3}>
+              <div css={selectedStyles}>
+                <h3>Selected movies:</h3>
+                {selectedMovies.map((movie) => {
+                  return (
+                    <div key={`selected movie ${movie.title}`}>
+                      <h4>
+                        {movie.title} ({movie.release_year})
+                      </h4>
+                    </div>
+                  );
+                })}
+                <button onClick={handleRecommendations}>
+                  Get recommendations!
+                </button>
+              </div>
+            </Grid>
+          ) : null}
+        </Grid>
+      ) : (
+        <div>
+          <h3>
+            Do you also want to get recommendations based on multiple movies?
+          </h3>
+          <p>
+            <Link href="/login">Log in to your account</Link> or{' '}
+            <Link href="registration">create a free account</Link> to get going!
+          </p>
+        </div>
+      )}
     </>
   );
 }
 
-export default Movies;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = context.req.cookies.sessionToken;
+  const session = token && (await getSessionByToken(token));
+  if (!session) {
+    context.res.statusCode = 401;
+    return {
+      props: {
+        errors: [{ message: 'Unauthorized user' }],
+      },
+    };
+  }
+  const csrfToken = createTokenFromSecret(session.csrfToken);
+  return { props: { csrfToken: csrfToken } };
+}

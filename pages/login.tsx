@@ -4,8 +4,13 @@ import { useState } from 'react';
 import { User } from '../database/user';
 import { formStyles } from '../styles/formStyles';
 import { LoginResponseType } from './api/login';
+import { Error } from './api/register';
 
-export default function Login() {
+type Props = {
+  refreshUserProfile: () => void;
+};
+
+export default function Login({ refreshUserProfile }: Props) {
   const [username, setUsername] = useState<User['username']>('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Error[]>([]);
@@ -28,6 +33,7 @@ export default function Login() {
     const data: LoginResponseType = await response.json();
     if ('errors' in data) {
       setErrors([...errors, data.errors]);
+      return;
     }
     const returnTo = router.query.returnTo;
     if (
@@ -39,8 +45,8 @@ export default function Login() {
       return await router.push(returnTo);
     }
 
-    /* // refresh the user on state
-      await props.refreshUserProfile(); */
+    // refresh the user on state
+    refreshUserProfile();
     // redirect user to user profile
     await router.push(`/movies`);
   }

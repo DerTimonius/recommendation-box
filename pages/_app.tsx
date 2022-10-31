@@ -51,7 +51,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Sidebar user={user} />
         </Grid>
         <Grid item xs={9}>
-          <Component {...pageProps} className="main" />
+          <Component
+            {...pageProps}
+            className="main"
+            refreshUserProfile={refreshUserProfile}
+          />
         </Grid>
       </Grid>
     </div>

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken } from '../../database/sessions';
 import { getUserByToken } from '../../database/user';
+import { validateTokenFromCsrfSecret } from '../../utils/csrf';
 
 export default async function handler(
   request: NextApiRequest,
@@ -16,14 +17,13 @@ export default async function handler(
         .status(400)
         .json({ errors: { message: 'Session token not valid' } });
     }
-    console.log('token', session.token);
     const user = await getUserByToken(session.token);
-    console.log(user);
     if (!user) {
       return response
         .status(400)
         .json({ errors: { message: 'Token did not retrieve valid user' } });
     }
+
     return response.status(200).json({ user: user });
   }
   return response

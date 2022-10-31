@@ -23,8 +23,12 @@ const sidebarStyles = css`
   }
 `;
 type Props = {
-  user: User;
+  user: User | undefined;
 };
+function Anchor({ children, ...restProps }: any) {
+  // to force a refresh of the page using an <a> tag instead of Link
+  return <a {...restProps}>{children}</a>;
+}
 function Sidebar({ user }: Props) {
   return (
     <div css={sidebarStyles}>
@@ -37,7 +41,7 @@ function Sidebar({ user }: Props) {
         {user ? (
           <>
             <Link href="/profile">Profile settings</Link>
-            <a href="/logout">Log Out</a>
+            <Anchor href="/logout">Log Out</Anchor>
           </>
         ) : (
           <>

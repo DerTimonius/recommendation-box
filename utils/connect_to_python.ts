@@ -2,9 +2,12 @@ import { execaCommand } from 'execa';
 
 // const { execaCommand } = require('execa');
 
-export async function checkRecommendations(selectedMovieIds: string) {
+export async function checkRecommendations(
+  selectedMovieIds: string,
+  preferences: boolean,
+) {
   const { stdout } = await execaCommand(
-    `python ./utils/python/recommend.py ${selectedMovieIds} True`,
+    `python ./utils/python/recommend.py ${selectedMovieIds} ${preferences}`,
   );
   return stdout;
 }

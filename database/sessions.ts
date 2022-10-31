@@ -3,14 +3,14 @@ import { User } from './user';
 
 export type Session = {
   token: string;
-  csrf_secret: string;
+  csrfToken: string;
   id: number;
 };
 
 export async function createSession(
   userId: User['id'],
   token: Session['token'],
-  secret: Session['csrf_secret'],
+  secret: Session['csrfToken'],
 ): Promise<Session> {
   const [session] = await sql<Session[]>`
   INSERT INTO sessions
@@ -36,6 +36,7 @@ export async function getSessionByToken(token: Session['token']) {
   FROM
     sessions
   WHERE token = ${token}`;
+  console.log(session);
   return session;
 }
 

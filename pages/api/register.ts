@@ -10,7 +10,7 @@ export type Error = {
   message: string;
 };
 export type RegisterResponseType =
-  | { errors: Error }
+  | { errors: { message: string } }
   | { user: { username: User['username'] } };
 
 export default async function handler(

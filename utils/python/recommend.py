@@ -38,7 +38,7 @@ def get_score(df, movie_id):
   movie_score = df[(df["index"] == movie_id)]["score"]
   return movie_score
 
-def get_best_movie_rec(movie_input_id_list, western):
+def get_best_movie_rec(movie_input_id_list, preferences):
 
 
   # takes a list of movie/show ids, calls a function to create a list of differnt versions of the dataframe to compare the scores later.
@@ -51,7 +51,7 @@ def get_best_movie_rec(movie_input_id_list, western):
   for top_list in combined_top_list:
     for movie in top_list[1:]:
       total_score = 0
-      if western and df_combined["country"].iloc[movie] == "India":
+      if bool(preferences.capitalize()) and df_combined["country"].iloc[movie] == "India":
         continue
       if movie in movie_input_id_list:
         continue
@@ -69,5 +69,5 @@ def get_best_movie_rec(movie_input_id_list, western):
 
 
 movie_list = sys.argv[1:-1]
-western = sys.argv[-1]
-print(get_best_movie_rec(movie_list, western))
+preferences = sys.argv[-1]
+print(get_best_movie_rec(movie_list, preferences))

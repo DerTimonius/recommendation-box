@@ -4,6 +4,7 @@ import { Session } from './sessions';
 export type User = {
   id: number;
   username: string;
+  preferences: boolean;
 };
 export type FullUser = User & {
   passwordHash: string;
@@ -25,7 +26,8 @@ export async function getUserByUsername(username: User['username']) {
   const [user] = await sql<User[]>`
   SELECT
     id,
-    username
+    username,
+    preferences
   FROM
     users
   WHERE
@@ -50,11 +52,11 @@ export async function getUserWithPasswordByUsername(
 
 export async function getUserByToken(token: Session['token']) {
   if (!token) return undefined;
-  console.log('token in function', token);
   const [user] = await sql<User[]>`
   SELECT
     users.id,
-    users.username
+    users.username,
+    users.preferences
   FROM
     users,
     sessions
@@ -76,5 +78,47 @@ export async function getUserByPasswordHash(
   SELECT * FROM users
   WHERE
     password_hash = ${passwordHash}`;
+  return user;
+}
+export async function changePreferenceById(
+  id: User['id'],
+  preferences: User['preferences'],
+) {
+  if (!id) return undefined;
+  const [user] = await sql<User[]>`
+  UPDATE
+    users
+  SET
+    preferences = ${preferences}
+  WHERE
+    id = ${id}
+  RETURNING
+    id,
+    username,
+    preferences
+  `;
+  return user;
+}
+export async function updatePasswordById(
+  id: User['id'],
+  passwordHash: FullUser['passwordHash'],
+) {
+  const [user] = await sql<FullUser[]>`
+  UPDATE
+    users
+  SET
+    password_hash = ${passwordHash}
+  WHERE
+    id = ${id}
+  RETURNING *`;
+  return user;
+}
+export async function deleteUserById(id: User['id']) {
+  const [user] = await sql<User[]>`
+  DELETE FROM
+    users
+  WHERE
+    id = ${id}
+  RETURNING *`;
   return user;
 }

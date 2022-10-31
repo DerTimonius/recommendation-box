@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+// import { css } from '@emotion/react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -8,7 +8,11 @@ import { User } from '../database/user';
 import { formStyles } from '../styles/formStyles';
 import { Error, RegisterResponseType } from './api/register';
 
-export default function Register() {
+type Props = {
+  refreshUserProfile: () => void;
+};
+
+export default function Register({ refreshUserProfile }: Props) {
   const [username, setUsername] = useState<User['username']>('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -43,10 +47,10 @@ export default function Register() {
         return await router.push(returnTo);
       }
 
-      /* // refresh the user on state
-      await props.refreshUserProfile(); */
+      // refresh the user on state
+      refreshUserProfile();
       // redirect user to user profile
-      await router.push(`/movies`);
+      await router.push(`/profile`);
     }
     setErrors([
       ...errors,
