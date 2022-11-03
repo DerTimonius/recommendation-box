@@ -1,7 +1,26 @@
 import { css } from '@emotion/react';
-import { CircularProgress, Grid } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
+import LiveTvIcon from '@mui/icons-material/LiveTv';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import SearchIcon from '@mui/icons-material/Search';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import FormLabel from '@mui/material/FormLabel';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import MUILink from '@mui/material/Link';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { getSessionByToken } from '../database/sessions';
@@ -13,12 +32,6 @@ const movieStyles = css`
   align-items: center;
   margin-top: 48px;
 
-  #search-field {
-    background-color: #b9e25e;
-    color: black;
-    border-radius: 6px;
-    height: 24px;
-  }
   .search-results {
     margin: 12px;
     padding: 24px;
@@ -31,11 +44,6 @@ const movieStyles = css`
   }
   ul > li + li {
     margin-top: 36px;
-  }
-  .loading-recommendations {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
   }
 `;
 
@@ -55,7 +63,13 @@ export type Movie = {
   cast: string;
   index: number;
 };
-export type RecommendedMovie = Movie & { description: string; type: string };
+export type RecommendedMovie = Movie & {
+  description: string;
+  type: string;
+  poster: string | undefined;
+  rating: number;
+  imdbId: string;
+};
 
 type Props =
   | { errors: { message: string }[]; csrfToken: undefined }
@@ -69,12 +83,13 @@ export default function Movies(props: Props) {
     RecommendedMovie[]
   >([]);
   const [isRecommending, setIsRecommending] = useState(false);
+  const [options, setOptions] = useState('both');
 
   async function handleSearch() {
     setSearchResult([]);
     setSearchInput('');
     setIsSearching(true);
-    const response = await fetch('/api/search', {
+    const response = await fetch('/api/movies/search', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -92,7 +107,7 @@ export default function Movies(props: Props) {
     setRecommendedMovies([]);
     setIsRecommending(true);
     const selectedMoviesIndex = selectedMovies.map((movie) => movie.index);
-    const response = await fetch('/api/recommend', {
+    const response = await fetch('/api/movies/recommend', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -100,11 +115,16 @@ export default function Movies(props: Props) {
       body: JSON.stringify({
         selectedMovies: selectedMoviesIndex.join(' '),
         csrfToken: props.csrfToken,
+        options: options,
       }),
     });
     const data = await response.json();
     setRecommendedMovies(data.result);
     setIsRecommending(false);
+  }
+  function handleDelete(title: Movie['title']) {
+    const movieList = selectedMovies;
+    setSelectedMovies(movieList.filter((movie) => movie.title !== title));
   }
   return (
     <>
@@ -123,25 +143,51 @@ export default function Movies(props: Props) {
               <div>
                 {recommendedMovies.map((movie) => {
                   return (
-                    <div key={`recommended movie ${movie.title}`}>
-                      <h4>
-                        {movie.title} ({movie.release_year})
-                      </h4>
-                      <p>{movie.cast}</p>
-                      <p>{movie.description}</p>
-                    </div>
+                    <Card key={`recommended movie ${movie.title}`}>
+                      <CardContent>
+                        <Typography variant="h5">
+                          {movie.title} ({movie.release_year})
+                        </Typography>
+                        {movie.poster ? (
+                          <Image
+                            // src={movie.poster}
+                            src={`https://image.tmdb.org/t/p/original${movie.poster}`}
+                            height={300}
+                            width={220}
+                            alt={`Poster of ${movie.title}`}
+                          />
+                        ) : null}
+                        <Typography variant="body1">{movie.cast}</Typography>
+                        <Typography variant="body2">
+                          {movie.description}
+                        </Typography>
+                        <Typography variant="body2">
+                          IMDb Rating: {movie.rating}
+                        </Typography>
+                        <MUILink
+                          href={`https://www.imdb.com/title/${movie.imdbId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          underline="hover"
+                        >
+                          Learn more at IMDb!
+                        </MUILink>
+                      </CardContent>
+                    </Card>
                   );
                 })}
               </div>
-              <button
+              <Button
+                variant="contained"
                 onClick={() => {
                   setRecommendedMovies([]);
                   setSelectedMovies([]);
                   setSearchResult([]);
                 }}
+                startIcon={<LiveTvIcon />}
               >
                 Get new recommendations!
-              </button>
+              </Button>
             </Grid>
           ) : isRecommending ? (
             <div className="loading-recommendations">
@@ -154,48 +200,67 @@ export default function Movies(props: Props) {
           ) : (
             <Grid item xs={9}>
               <div css={movieStyles}>
-                <h1>Discover new entertainment options</h1>
+                <Typography variant="h3">
+                  Discover new entertainment options
+                </Typography>
                 <br />
                 <div>
-                  <input
-                    // label="Search movie/show"
-                    id="search-field"
-                    value={searchInput}
-                    onChange={(event) =>
-                      setSearchInput(event.currentTarget.value)
-                    }
-                  />
-                  <button onClick={handleSearch}>Search</button>
+                  <FormGroup>
+                    <TextField
+                      id="search-field"
+                      variant="outlined"
+                      label="Search Movie/TV show"
+                      value={searchInput}
+                      onChange={(event) =>
+                        setSearchInput(event.currentTarget.value)
+                      }
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={handleSearch}
+                      startIcon={<SearchIcon />}
+                    >
+                      Search
+                    </Button>
+                  </FormGroup>
                 </div>
                 {isSearching ? (
                   <>
                     <p>Currently searching in our database, please hold!</p>
                     <CircularProgress color="inherit" />
                   </>
-                ) : searchResult.length > 0 ? (
-                  <ul className="search-results">
-                    {searchResult.map((movie) => {
-                      return (
-                        <li key={`movie_index ${movie.index}`}>
-                          <div>
-                            <h4>
-                              {movie.title} ({movie.release_year})
-                            </h4>
-                            <p>{movie.cast}</p>
-                          </div>
-                          <button
-                            onClick={() =>
-                              setSelectedMovies([...selectedMovies, movie])
-                            }
-                          >
-                            Add to selected movies
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : null}
-                {/* {searchResult ? searchResult.map((movie) => {}) : null} */}
+                ) : (
+                  searchResult.length > 0 && (
+                    <ul className="search-results">
+                      {searchResult.map((movie) => {
+                        return (
+                          // <li key={`movie_index ${movie.index}`}>
+                          <Card key={`movie_index ${movie.index}`}>
+                            <CardContent>
+                              <Typography variant="h6">
+                                {movie.title} ({movie.release_year})
+                              </Typography>
+                              <Typography variant="body1">
+                                {' '}
+                                Cast: {movie.cast}
+                              </Typography>
+                              <Button
+                                variant="contained"
+                                startIcon={<PlaylistAddIcon />}
+                                onClick={() =>
+                                  setSelectedMovies([...selectedMovies, movie])
+                                }
+                              >
+                                Add to selected movies
+                              </Button>
+                            </CardContent>
+                          </Card>
+                          // </li>
+                        );
+                      })}
+                    </ul>
+                  )
+                )}
               </div>
             </Grid>
           )}
@@ -208,13 +273,49 @@ export default function Movies(props: Props) {
                     <div key={`selected movie ${movie.title}`}>
                       <h4>
                         {movie.title} ({movie.release_year})
+                        <IconButton
+                          onClick={() => handleDelete(movie.title)}
+                          aria-label="delete"
+                        >
+                          <ClearIcon />
+                        </IconButton>
                       </h4>
                     </div>
                   );
                 })}
-                <button onClick={handleRecommendations}>
+                <FormControl>
+                  <FormLabel id="radio-options">Select type:</FormLabel>
+                  <RadioGroup
+                    aria-label="radio-options"
+                    // defaultValue="both"
+                    name="radio-options-group"
+                    value={options}
+                    onChange={(event) => setOptions(event.target.value)}
+                  >
+                    <FormControlLabel
+                      value="movie"
+                      label="Movie"
+                      control={<Radio />}
+                    />
+                    <FormControlLabel
+                      value="tv"
+                      label="TV Show"
+                      control={<Radio />}
+                    />
+                    <FormControlLabel
+                      value="both"
+                      label="Both"
+                      control={<Radio />}
+                    />
+                  </RadioGroup>
+                </FormControl>
+                <Button
+                  onClick={handleRecommendations}
+                  variant="outlined"
+                  startIcon={<LiveTvIcon />}
+                >
                   Get recommendations!
-                </button>
+                </Button>
               </div>
             </Grid>
           ) : null}

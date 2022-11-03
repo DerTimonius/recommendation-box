@@ -4,10 +4,11 @@ import { execaCommand } from 'execa';
 
 export async function checkRecommendations(
   selectedMovieIds: string,
+  options: string,
   preferences: boolean,
 ) {
   const { stdout } = await execaCommand(
-    `python ./utils/python/recommend.py ${selectedMovieIds} ${preferences}`,
+    `python ./utils/python/recommend.py ${selectedMovieIds} ${options} ${preferences}`,
   );
   return stdout;
 }

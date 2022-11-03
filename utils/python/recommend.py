@@ -5,13 +5,8 @@ import sys
 import json
 
 # read the file into a pandas dataframe and delete the "index" column, since it will be added later (and more accurately)
-df_combined = pd.read_csv("~/Documents/Coding/datasets/combined.csv")
+df_combined = pd.read_csv("~/Documents/Coding/datasets/combined_test.csv")
 df_combined.drop(["index"], axis=1, inplace=True)
-
-# doing the vectorizing = comparing the field features of every row to get the best match
-vect = CountVectorizer(stop_words='english')
-vect_matrix = vect.fit_transform(df_combined['features'])
-cosine_similarity_matrix_count_based = cosine_similarity(vect_matrix, vect_matrix)
 
 def add_score_to_df( index, df,cosine_similarity_matrix):
   """
@@ -38,13 +33,30 @@ def get_score(df, movie_id):
   movie_score = df[(df["index"] == movie_id)]["score"]
   return movie_score
 
-def get_best_movie_rec(movie_input_id_list, preferences):
+def get_best_movie_rec(movie_input_id_list, options, preferences):
 
+  # Check the input options if only movies or tv shows should be checked
+  if options == "movie":
+    checked_df = df_combined.loc[df_combined["type"] == "Movie"]
+    for movie in movie_input_id_list:
+      if df_combined["type"].iloc[int(movie)] == "TV Show":
+        checked_df = checked_df.append(df_combined.iloc[int(movie)])
+  elif options == "tv":
+    checked_df = df_combined.loc[df_combined["type"] == "TV Show"]
+    for movie in movie_input_id_list:
+      if df_combined["type"].iloc[int(movie)] == "Movie":
+        checked_df = checked_df.append(df_combined.iloc[int(movie)])
+  else:
+    checked_df = df_combined
 
+     # doing the vectorizing = comparing the field features of every row to get the best match
+  vect = CountVectorizer(stop_words='english')
+  vect_matrix = vect.fit_transform(checked_df['features'])
+  cosine_similarity_matrix_count_based = cosine_similarity(vect_matrix, vect_matrix)
   # takes a list of movie/show ids, calls a function to create a list of differnt versions of the dataframe to compare the scores later.
-  combined_df_list = [add_score_to_df(int(movie), df_combined, cosine_similarity_matrix_count_based) for movie in movie_input_id_list]
+  combined_df_list = [add_score_to_df(int(movie), checked_df, cosine_similarity_matrix_count_based) for movie in movie_input_id_list]
   # also, creates a list of the 6 most similar movies/shows, later deleting the first one, since that will always be the initial movie
-  combined_top_list = [combined_df_list[i].head(6)["index"].tolist() for i in range(len(combined_df_list))]
+  combined_top_list = [combined_df_list[i].head(20)["index"].tolist() for i in range(len(combined_df_list))]
   total_scores = []
   # looping through the lists:
   #  1. the list of movie list, 2. the movies in that list and 3. checking for the score of that movie in every dataframe version and adding together
@@ -53,14 +65,17 @@ def get_best_movie_rec(movie_input_id_list, preferences):
       total_score = 0
       if bool(preferences.capitalize()) and df_combined["country"].iloc[movie] == "India":
         continue
-      if movie in movie_input_id_list:
+      if str(movie) in movie_input_id_list:
         continue
-      for single_df in combined_df_list:
-        try:
-          total_score += float(get_score(single_df, movie))
-        except TypeError:
-          continue
-      total_scores.append({"movie_id": movie, "total_score": total_score})
+      if (options == "movie" and df_combined["type"].iloc[movie] == "Movie") or (options == "tv" and df_combined["type"].iloc[movie] == "TV Show") or (options == "both"):
+        for single_df in combined_df_list:
+          try:
+            total_score += float(get_score(single_df, movie))
+          except TypeError:
+            continue
+        total_scores.append({"movie_id": movie, "total_score": total_score})
+      else:
+        continue
   # sort the movies according to their total score and return the top 3 in JSON format, so it can be read with JS later
   top_movies = sorted(total_scores, key=lambda x: x["total_score"], reverse=True)
   top_movies_list = [df_combined.iloc[top_movies[i]["movie_id"]] for i in range(3)]
@@ -68,6 +83,7 @@ def get_best_movie_rec(movie_input_id_list, preferences):
   return json.dumps(output, allow_nan=True)
 
 
-movie_list = sys.argv[1:-1]
+movie_list = sys.argv[1:-2]
+options = sys.argv[-2]
 preferences = sys.argv[-1]
-print(get_best_movie_rec(movie_list, preferences))
+print(get_best_movie_rec(movie_list, options, preferences))

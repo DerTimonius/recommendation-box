@@ -1,3 +1,10 @@
+import DoneIcon from '@mui/icons-material/Done';
+import SaveIcon from '@mui/icons-material/Save';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
 
@@ -5,12 +12,11 @@ type Props = {
   csrfToken: string | undefined;
 };
 export default function ChangePassword({ csrfToken }: Props) {
-  const [buttonClicked, setButtonClicked] = useState(false);
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmedPassword, setConfirmedPassword] = useState('');
-  const [displayMessage, setDisplayMessage] = useState(false);
   const [errors, setErrors] = useState<Error[]>([]);
+  const [saveSuccessful, setSaveSuccessful] = useState(false);
 
   async function handleChangePassword(
     event:
@@ -32,45 +38,66 @@ export default function ChangePassword({ csrfToken }: Props) {
       });
       const data = await response.json();
       if ('errors' in data) {
-        setErrors([...errors, data.errors]);
+        setErrors([data.errors]);
         return;
       }
-      setDisplayMessage(true);
+      setSaveSuccessful(true);
     }
-    setErrors([...errors, { message: 'passwords are not matching' }]);
+    setErrors([{ message: 'passwords are not matching' }]);
   }
   return (
     <>
-      <button onClick={() => setButtonClicked(true)}>Change password</button>
-      {buttonClicked ? (
-        <form onSubmit={handleChangePassword}>
-          <label htmlFor="current">Current password</label>
-          <input
-            type="password"
-            name="current"
+      <FormGroup>
+        <FormControl margin="normal">
+          <InputLabel htmlFor="current-password">Current Password</InputLabel>
+          <Input
+            id="current-password"
+            required
             value={password}
             onChange={(event) => setPassword(event.currentTarget.value)}
-          />
-          <label htmlFor="newPassword">New password</label>
-          <input
+            margin="dense"
             type="password"
-            name="newPassword"
+          />
+        </FormControl>
+        <FormControl margin="normal">
+          <InputLabel htmlFor="new-password">New Password</InputLabel>
+          <Input
+            id="new-password"
+            required={true}
             value={newPassword}
             onChange={(event) => setNewPassword(event.currentTarget.value)}
-          />
-          <label htmlFor="confirmedPassword">Confirm password</label>
-          <input
+            margin="dense"
             type="password"
-            name="confirmedPassword"
+          />
+        </FormControl>
+        <FormControl margin="normal">
+          <InputLabel htmlFor="confirmed-password">
+            Confirm New Password
+          </InputLabel>
+          <Input
+            id="confirmed-password"
+            required={true}
             value={confirmedPassword}
             onChange={(event) =>
               setConfirmedPassword(event.currentTarget.value)
             }
+            margin="dense"
+            type="password"
           />
-          <button onClick={handleChangePassword}>Save changes</button>
-          {displayMessage ? <h4>Password changed successfully</h4> : null}
-        </form>
-      ) : null}
+        </FormControl>
+      </FormGroup>
+      <Button
+        startIcon={saveSuccessful ? <DoneIcon /> : <SaveIcon />}
+        variant="contained"
+        color="primary"
+        onClick={handleChangePassword}
+      >
+        {saveSuccessful ? <>Saved</> : <>Save Password</>}
+      </Button>
+      {errors.length > 0 &&
+        errors.map((error) => {
+          return <h4 key={`error ${error.message}`}>{error.message}</h4>;
+        })}
     </>
   );
 }

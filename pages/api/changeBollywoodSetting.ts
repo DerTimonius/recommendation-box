@@ -37,7 +37,7 @@ export default async function handler(
   }
   // check if preferences are sent via the request body
   const preferences = request.body.preferences;
-  if (!preferences) {
+  if (typeof preferences !== 'boolean') {
     return response.status(400).json({
       errors: {
         message: 'bad request, preferences need to be sent in the request',
