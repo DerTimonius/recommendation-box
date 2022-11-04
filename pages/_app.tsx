@@ -31,6 +31,7 @@ import Typography from '@mui/material/Typography';
 import { AppProps } from 'next/app';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import Footer from '../components/Footer';
 import { User } from '../database/user';
 
 interface AppBarProps extends MuiAppBarProps {
@@ -187,7 +188,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     justifyContent: 'center',
                   }}
                 >
-                  <HomeIcon />
+                  <Link href="/">
+                    <HomeIcon />
+                  </Link>
                 </ListItemIcon>
                 <ListItemText
                   primary={<Link href="/">Home</Link>}
@@ -210,7 +213,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     justifyContent: 'center',
                   }}
                 >
-                  <OndemandVideoIcon />
+                  <Link href="/movies">
+                    <OndemandVideoIcon />
+                  </Link>
                 </ListItemIcon>
                 <ListItemText
                   primary={<Link href="/movies">Movies/TV shows</Link>}
@@ -233,7 +238,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     justifyContent: 'center',
                   }}
                 >
-                  <LibraryBooksIcon />
+                  <Link href="/about">
+                    <LibraryBooksIcon />
+                  </Link>
                 </ListItemIcon>
                 <ListItemText
                   primary={<Link href="/about">How it works</Link>}
@@ -261,7 +268,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                         justifyContent: 'center',
                       }}
                     >
-                      <SettingsIcon />
+                      <Link href="/profile">
+                        <SettingsIcon />
+                      </Link>
                     </ListItemIcon>
                     <ListItemText
                       primary={<Link href="/profile">Profile settings</Link>}
@@ -284,7 +293,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                         justifyContent: 'center',
                       }}
                     >
-                      <LogoutIcon />
+                      <Anchor href="/logout">
+                        <LogoutIcon />
+                      </Anchor>
                     </ListItemIcon>
                     <ListItemText
                       primary={<Anchor href="/logout">Log Out</Anchor>}
@@ -310,7 +321,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                         justifyContent: 'center',
                       }}
                     >
-                      <LoginIcon />
+                      <Link href="/login">
+                        <LoginIcon />
+                      </Link>
                     </ListItemIcon>
                     <ListItemText
                       primary={<Link href="/login">Log In</Link>}
@@ -333,7 +346,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                         justifyContent: 'center',
                       }}
                     >
-                      <SwitchAccountIcon />
+                      <Link href="/register">
+                        <SwitchAccountIcon />
+                      </Link>
                     </ListItemIcon>
                     <ListItemText
                       primary={<Link href="/register">Sign Up</Link>}
@@ -352,20 +367,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             className="main"
             refreshUserProfile={refreshUserProfile}
           />
+          {/* <Footer /> */}
         </Box>
       </Box>
-      {/*  <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Sidebar user={user} />
-        </Grid>
-        <Grid item xs={9}>
-          <Component
-            {...pageProps}
-            className="main"
-            refreshUserProfile={refreshUserProfile}
-          />
-        </Grid>
-      </Grid> */}
     </div>
   );
 }

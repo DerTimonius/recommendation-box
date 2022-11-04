@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createSession } from '../../database/sessions';
 import { createUser, getUserByUsername, User } from '../../database/user';
-import { cretaeSessionCookie } from '../../utils/cookie';
+import { createSessionCookie } from '../../utils/cookie';
 import { createCsrfSecret } from '../../utils/csrf';
 
 export type Error = {
@@ -51,7 +51,7 @@ export default async function handler(
     const csrfSecret = createCsrfSecret();
 
     const session = await createSession(newUser.id, sessionToken, csrfSecret);
-    const sessionCookie = cretaeSessionCookie(session.token);
+    const sessionCookie = createSessionCookie(session.token);
     return response
       .status(200)
       .setHeader('Set-Cookie', sessionCookie)

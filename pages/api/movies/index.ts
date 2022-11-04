@@ -6,6 +6,8 @@ export type TrendingMovieType = {
   poster: string;
   overview: string;
   backdrop: string;
+  media: string;
+  id: number;
 };
 
 // snake_case because of the naming of the API response object
@@ -17,8 +19,10 @@ type CompleteMovieResponseType =
       poster_path: string;
       overview: string;
       backdrop_path: string;
+      id: number;
     }
   | {
+      id: number;
       backdrop_path: string;
       media_type: 'tv';
       name: string;
@@ -49,9 +53,13 @@ export default async function handler(
               poster: result.poster_path,
               overview: result.overview,
               backdrop: result.backdrop_path,
+              media: result.media_type,
+              id: result.id,
             };
           } else if (result.media_type === 'tv') {
             return {
+              id: result.id,
+              media: result.media_type,
               backdrop: result.backdrop_path,
               title: result.name,
               originalTitle: result.original_name,

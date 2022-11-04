@@ -22,8 +22,9 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getSessionByToken } from '../database/sessions';
+import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
 import { createTokenFromSecret } from '../utils/csrf';
 
 const movieStyles = css`
@@ -31,7 +32,6 @@ const movieStyles = css`
   flex-direction: column;
   align-items: center;
   margin-top: 48px;
-
   .search-results {
     margin: 12px;
     padding: 24px;
@@ -53,7 +53,6 @@ const selectedStyles = css`
   align-items: center;
   padding: 12px;
   padding-top: 48px;
-  border-left: 1px solid #b9e25e;
   height: 100vh;
 `;
 
@@ -68,7 +67,8 @@ export type RecommendedMovie = Movie & {
   type: string;
   poster: string | undefined;
   rating: number;
-  imdbId: string;
+  tmdbId: number;
+  media: string;
 };
 
 type Props =
@@ -85,9 +85,17 @@ export default function Movies(props: Props) {
   const [isRecommending, setIsRecommending] = useState(false);
   const [options, setOptions] = useState('both');
 
+  /*  useEffect(() => {
+    const cookie = getCookie('selectedMovie');
+    setSelectedMovies([]);
+    console.log(cookie);
+    if (cookie) {
+      setSelectedMovies([...selectedMovies, cookie[0]]);
+      console.log(selectedMovies);
+    }
+  }, []); */
   async function handleSearch() {
     setSearchResult([]);
-    setSearchInput('');
     setIsSearching(true);
     const response = await fetch('/api/movies/search', {
       method: 'POST',
@@ -102,6 +110,7 @@ export default function Movies(props: Props) {
     const data = await response.json();
     setSearchResult(data.result);
     setIsSearching(false);
+    setSearchInput('');
   }
   async function handleRecommendations() {
     setRecommendedMovies([]);
@@ -125,6 +134,15 @@ export default function Movies(props: Props) {
   function handleDelete(title: Movie['title']) {
     const movieList = selectedMovies;
     setSelectedMovies(movieList.filter((movie) => movie.title !== title));
+  }
+  function handleSelect(movie: Movie) {
+    const cookieValue = getCookie('selectedMovie');
+    if (!cookieValue) {
+      setCookie('selectedMovie', [movie]);
+    } else {
+      cookieValue.push(movie);
+      setCookie('selectedMovie', cookieValue);
+    }
   }
   return (
     <>
@@ -150,28 +168,33 @@ export default function Movies(props: Props) {
                         </Typography>
                         {movie.poster ? (
                           <Image
-                            // src={movie.poster}
                             src={`https://image.tmdb.org/t/p/original${movie.poster}`}
                             height={300}
                             width={220}
                             alt={`Poster of ${movie.title}`}
                           />
-                        ) : null}
+                        ) : (
+                          <p>No poster found</p>
+                        )}
                         <Typography variant="body1">{movie.cast}</Typography>
                         <Typography variant="body2">
                           {movie.description}
                         </Typography>
-                        <Typography variant="body2">
-                          IMDb Rating: {movie.rating}
-                        </Typography>
-                        <MUILink
-                          href={`https://www.imdb.com/title/${movie.imdbId}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          underline="hover"
-                        >
-                          Learn more at IMDb!
-                        </MUILink>
+                        {movie.rating ? (
+                          <Typography variant="body2">
+                            IMDb Rating: {movie.rating}
+                          </Typography>
+                        ) : null}
+                        {movie.tmdbId ? (
+                          <MUILink
+                            href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            underline="hover"
+                          >
+                            Learn more at TMDb!
+                          </MUILink>
+                        ) : null}
                       </CardContent>
                     </Card>
                   );
@@ -183,6 +206,7 @@ export default function Movies(props: Props) {
                   setRecommendedMovies([]);
                   setSelectedMovies([]);
                   setSearchResult([]);
+                  deleteCookie('selectedMovie');
                 }}
                 startIcon={<LiveTvIcon />}
               >
@@ -190,13 +214,13 @@ export default function Movies(props: Props) {
               </Button>
             </Grid>
           ) : isRecommending ? (
-            <div className="loading-recommendations">
+            <Grid item xs={9}>
               <h2>Getting recommendations!</h2>
               <hr />
               <p>This might take up to 30 seconds, please be patient.</p>
               <br />
               <CircularProgress color="inherit" />
-            </div>
+            </Grid>
           ) : (
             <Grid item xs={9}>
               <div css={movieStyles}>
@@ -204,26 +228,27 @@ export default function Movies(props: Props) {
                   Discover new entertainment options
                 </Typography>
                 <br />
-                <div>
-                  <FormGroup>
-                    <TextField
-                      id="search-field"
-                      variant="outlined"
-                      label="Search Movie/TV show"
-                      value={searchInput}
-                      onChange={(event) =>
-                        setSearchInput(event.currentTarget.value)
-                      }
-                    />
-                    <Button
-                      variant="contained"
-                      onClick={handleSearch}
-                      startIcon={<SearchIcon />}
-                    >
-                      Search
-                    </Button>
-                  </FormGroup>
-                </div>
+                <FormGroup sx={{ width: 480 }}>
+                  <TextField
+                    id="search-field"
+                    fullWidth={true}
+                    variant="outlined"
+                    label="Search Movie/TV show"
+                    value={searchInput}
+                    disabled={selectedMovies.length >= 6}
+                    onChange={(event) =>
+                      setSearchInput(event.currentTarget.value)
+                    }
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleSearch}
+                    startIcon={<SearchIcon />}
+                  >
+                    Search
+                  </Button>
+                </FormGroup>
+
                 {isSearching ? (
                   <>
                     <p>Currently searching in our database, please hold!</p>
@@ -231,7 +256,7 @@ export default function Movies(props: Props) {
                   </>
                 ) : (
                   searchResult.length > 0 && (
-                    <ul className="search-results">
+                    <div className="search-resdivts">
                       {searchResult.map((movie) => {
                         return (
                           // <li key={`movie_index ${movie.index}`}>
@@ -247,9 +272,10 @@ export default function Movies(props: Props) {
                               <Button
                                 variant="contained"
                                 startIcon={<PlaylistAddIcon />}
-                                onClick={() =>
-                                  setSelectedMovies([...selectedMovies, movie])
-                                }
+                                onClick={() => {
+                                  handleSelect(movie);
+                                  setSelectedMovies([...selectedMovies, movie]);
+                                }}
                               >
                                 Add to selected movies
                               </Button>
@@ -258,14 +284,14 @@ export default function Movies(props: Props) {
                           // </li>
                         );
                       })}
-                    </ul>
+                    </div>
                   )
                 )}
               </div>
             </Grid>
           )}
           {selectedMovies.length > 0 ? (
-            <Grid item xs={3}>
+            <Grid item xs={3} sx={{ maxWidth: 240 }}>
               <div css={selectedStyles}>
                 <h3>Selected movies:</h3>
                 {selectedMovies.map((movie) => {
@@ -287,7 +313,6 @@ export default function Movies(props: Props) {
                   <FormLabel id="radio-options">Select type:</FormLabel>
                   <RadioGroup
                     aria-label="radio-options"
-                    // defaultValue="both"
                     name="radio-options-group"
                     value={options}
                     onChange={(event) => setOptions(event.target.value)}

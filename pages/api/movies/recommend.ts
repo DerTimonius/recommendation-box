@@ -60,36 +60,19 @@ export default async function handler(
   );
   const resultArray = await Promise.all(
     result.map(async (movie) => {
-      /* return fetch(
-        `http://www.omdbapi.com/?apikey=${
-          process.env.OMDB_API_KEY
-        }&t=${movie.title.replace(' ', '+').replace("Marvel's", '')}&y=${
-          movie.release_year
-        }`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          return {
-            ...movie,
-            poster: data.Poster,
-            rating: data.imdbRating,
-            imdbId: data.imdbID,
-          };
-        })
-        .catch((err) => console.log(err)); */
       const data = await getMovieDetails(movie.title, movie.release_year);
       if (data) {
         return {
           ...movie,
           poster: data[0].poster_path,
           rating: data[0].vote_average,
-          imdbId: data[1],
+          tmdbId: data[0].id,
+          media: data[0].media_type,
         };
       } else {
         return { ...movie };
       }
     }),
   );
-  console.log(resultArray);
   return response.status(200).json({ result: resultArray });
 }
