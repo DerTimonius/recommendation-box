@@ -4,7 +4,14 @@ This is the repository for my final project while attending the UpLeveled Bootca
 
 When progressing in this project, this Readme will be revised multiple times.
 
-### Technologies used
+## Table of contents
+
+1. [Technologies used](#technologies-used)
+2. [Installation guide](#installation-guide)
+3. [Setting up the database](#setting-up-the-database)
+4. [Creating the .env file](#creating-the-env-file)
+
+## Technologies used
 
 * React.js, Next.js
 * Material UI
@@ -16,7 +23,7 @@ When progressing in this project, this Readme will be revised multiple times.
 * (Jest, Playwright)
 * Fly.io
 
-### Installation guide
+## Installation guide
 
 If you would like to use this project locally, after cloning the project and changing to the correct directory, you need to do the following steps in your terminal:
 1. Get the necessary dependencies for React.js/Next.js using either
@@ -54,7 +61,7 @@ pip install -r requirements.txt
 ```
 in your terminal.
 
-### Setting up the database
+## Setting up the database
 
 This project uses PostgreSQL, so make sure it is installed locally on your machine. Then, start postgres by typing on Mac:
 ```
@@ -76,6 +83,6 @@ GRANT ALL PRIVILEGES ON DATABASE <database name> TO <user name>;
 ```
 If everything is setup, either after closing postgres or in a separate terminal window, you can run ``yarn migrate up`` or ``npm run migrate up`` to create the necessary tables. Check postgres by using ``SELECT * FROM users;`` to make sure it worked.
 
-### Creating the .env file
+## Creating the .env file
 
 Check the .env.example file to see what environmental variables you need. You will also need a (free) API key from Open Movie Database.
