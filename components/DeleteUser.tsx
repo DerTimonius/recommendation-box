@@ -22,7 +22,7 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
     if (!password) {
       setErrors([...errors, { message: 'Please enter your password' }]);
     }
-    const response = await fetch('/api/deleteUser', {
+    const response = await fetch('/api/user/deleteUser', {
       method: 'DELETE',
       headers: {
         'content-type': 'application/json',
