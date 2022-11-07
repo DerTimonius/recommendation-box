@@ -36,7 +36,6 @@ export async function getSessionByToken(token: Session['token']) {
   FROM
     sessions
   WHERE token = ${token}`;
-  console.log(session);
   return session;
 }
 

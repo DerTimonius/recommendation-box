@@ -1,3 +1,11 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {
+  Button,
+  FormControl,
+  FormGroup,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -58,13 +66,41 @@ export default function Login({ refreshUserProfile }: Props) {
         <meta name="description" content="login page" />
       </Head>
       <div css={formStyles}>
-        <h4>Login to get going</h4>
+        <Typography variant="h4">Login to get going</Typography>
         {errors.length > 0
           ? errors.map((error) => {
               return <h5 key={`error ${error.message}`}>{error.message}</h5>;
             })
           : null}
-        <form onSubmit={handleSubmit}>
+        <FormGroup>
+          <FormControl margin="normal">
+            <TextField
+              id="username"
+              label="Username"
+              variant="filled"
+              value={username}
+              onChange={(event) => setUsername(event.currentTarget.value)}
+            />
+          </FormControl>
+          <FormControl margin="normal">
+            <TextField
+              type="password"
+              id="password"
+              label="Password"
+              variant="filled"
+              value={password}
+              onChange={(event) => setPassword(event.currentTarget.value)}
+            />
+          </FormControl>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            startIcon={<AccountCircleIcon />}
+          >
+            Login
+          </Button>
+        </FormGroup>
+        {/* <form onSubmit={handleSubmit}>
           <label htmlFor="username">Username</label>
           <input
             value={username}
@@ -79,7 +115,7 @@ export default function Login({ refreshUserProfile }: Props) {
             id="userpasswordname"
           />
           <button onClick={handleSubmit}>Log In</button>
-        </form>
+        </form> */}
       </div>
     </>
   );

@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSessionByToken } from '../../database/sessions';
-import { getUserByToken } from '../../database/user';
-import { checkRecommendations } from '../../utils/connect_to_python';
-import { validateTokenFromCsrfSecret } from '../../utils/csrf';
+import { getSessionByToken } from '../../../database/sessions';
+import { getUserByToken } from '../../../database/user';
+import { checkRecommendations } from '../../../utils/connect_to_python';
+import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
+import getMovieDetails from '../../../utils/details';
+import { RecommendedMovie } from '../../movies';
 
 export default async function handler(
   request: NextApiRequest,
@@ -42,8 +44,35 @@ export default async function handler(
   }
   // get the selected movies from the request body
   const selectedMovies = request.body.selectedMovies;
-  const result = JSON.parse(
-    await checkRecommendations(selectedMovies, user.preferences),
+  const options = request.body.options;
+  if (
+    !selectedMovies ||
+    !options ||
+    typeof selectedMovies !== 'string' ||
+    typeof options !== 'string'
+  ) {
+    return response.status(400).json({
+      errors: { message: 'Movie List and/or Options missing or wrong type' },
+    });
+  }
+  const result: RecommendedMovie[] = JSON.parse(
+    await checkRecommendations(selectedMovies, options, user.preferences),
   );
-  return response.status(200).json({ result: result });
+  const resultArray = await Promise.all(
+    result.map(async (movie) => {
+      const data = await getMovieDetails(movie.title, movie.release_year);
+      if (data) {
+        return {
+          ...movie,
+          poster: data[0].poster_path,
+          rating: data[0].vote_average,
+          tmdbId: data[0].id,
+          media: data[0].media_type,
+        };
+      } else {
+        return { ...movie };
+      }
+    }),
+  );
+  return response.status(200).json({ result: resultArray });
 }

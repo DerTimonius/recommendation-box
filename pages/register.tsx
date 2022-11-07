@@ -1,4 +1,12 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 // import { css } from '@emotion/react';
+import {
+  Button,
+  FormControl,
+  FormGroup,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -67,13 +75,50 @@ export default function Register({ refreshUserProfile }: Props) {
         <meta name="description" content="Register user" />
       </Head>
       <div css={formStyles}>
-        <h4>Create an account and get started!</h4>
-        {errors.length > 0
-          ? errors.map((error) => {
-              return <h5 key={`error ${error.message}`}>{error.message}</h5>;
-            })
-          : null}
-        <form onSubmit={handleSubmit}>
+        <Typography variant="h4">Create an account and get started!</Typography>
+        {errors.length > 0 &&
+          errors.map((error) => {
+            return <h5 key={`error ${error.message}`}>{error.message}</h5>;
+          })}
+        <FormGroup>
+          <FormControl margin="normal">
+            <TextField
+              id="username"
+              label="Username"
+              variant="filled"
+              value={username}
+              onChange={(event) => setUsername(event.currentTarget.value)}
+            />
+          </FormControl>
+          <FormControl margin="normal">
+            <TextField
+              type="password"
+              id="password"
+              label="Password"
+              variant="filled"
+              value={password1}
+              onChange={(event) => setPassword1(event.currentTarget.value)}
+            />
+          </FormControl>
+          <FormControl margin="normal">
+            <TextField
+              type="password"
+              id="confirmed-password"
+              label="Confirm Password"
+              variant="filled"
+              value={password2}
+              onChange={(event) => setPassword2(event.currentTarget.value)}
+            />
+          </FormControl>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            startIcon={<AccountCircleIcon />}
+          >
+            Create Account
+          </Button>
+        </FormGroup>
+        {/*  <form onSubmit={handleSubmit}>
           <label htmlFor="username">Username</label>
           <input
             id="username"
@@ -95,7 +140,7 @@ export default function Register({ refreshUserProfile }: Props) {
             onChange={(event) => setPassword2(event.currentTarget.value)}
           />
           <button onClick={handleSubmit}>Create User</button>
-        </form>
+        </form> */}
       </div>
     </>
   );

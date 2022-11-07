@@ -1,3 +1,9 @@
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
@@ -40,20 +46,30 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
       <br />
       <p>Please enter your password to delete your account!</p>
       <div>
-        <label htmlFor="password">Enter your password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={password}
-          onChange={(event) => setPassword(event.currentTarget.value)}
-        />
-        <button onClick={handleDelete}>Delete account</button>
-        {errors.length > 0
-          ? errors.map((error) => (
-              <h4 key={`error ${error.message}`}>{error.message}</h4>
-            ))
-          : null}
+        {errors.length > 0 &&
+          errors.map((error) => (
+            <h4 key={`error ${error.message}`}>{error.message}</h4>
+          ))}
+        <FormGroup>
+          <FormControl margin="normal" variant="filled">
+            <InputLabel htmlFor="password">Enter your password</InputLabel>
+            <Input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(event) => setPassword(event.currentTarget.value)}
+              error={errors.length > 0 && true}
+            />
+          </FormControl>
+          <Button
+            color="warning"
+            variant="contained"
+            onClick={handleDelete}
+            startIcon={<ReportProblemIcon />}
+          >
+            Delete account
+          </Button>
+        </FormGroup>
       </div>
     </div>
   );
