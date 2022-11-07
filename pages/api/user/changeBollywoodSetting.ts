@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSessionByToken } from '../../database/sessions';
-import { changePreferenceById, getUserByToken } from '../../database/user';
-import { validateTokenFromCsrfSecret } from '../../utils/csrf';
+import { getSessionByToken } from '../../../database/sessions';
+import { changePreferenceById, getUserByToken } from '../../../database/user';
+import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
 
 export default async function handler(
   request: NextApiRequest,

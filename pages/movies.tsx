@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import ClearIcon from '@mui/icons-material/Clear';
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import SaveIcon from '@mui/icons-material/Save';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -55,20 +56,23 @@ const selectedStyles = css`
   padding-top: 48px;
   height: 100vh;
 `;
-
+// snake_case in release_year because of Python naming convention, where the data comes from
 export type Movie = {
   title: string;
   release_year: number;
+  // add another variant of releaseYear because of postgreSQL turning it to camelCase
+  releaseYear: number;
   cast: string;
   index: number;
 };
 export type RecommendedMovie = Movie & {
   description: string;
   type: string;
-  poster: string | undefined;
+  poster?: string;
   rating: number;
   tmdbId: number;
   media: string;
+  director: string;
 };
 
 type Props =
@@ -85,15 +89,12 @@ export default function Movies(props: Props) {
   const [isRecommending, setIsRecommending] = useState(false);
   const [options, setOptions] = useState('both');
 
-  /*  useEffect(() => {
+  useEffect(() => {
     const cookie = getCookie('selectedMovie');
-    setSelectedMovies([]);
-    console.log(cookie);
     if (cookie) {
-      setSelectedMovies([...selectedMovies, cookie[0]]);
-      console.log(selectedMovies);
+      setSelectedMovies(cookie);
     }
-  }, []); */
+  }, []);
   async function handleSearch() {
     setSearchResult([]);
     setIsSearching(true);
@@ -143,6 +144,20 @@ export default function Movies(props: Props) {
       cookieValue.push(movie);
       setCookie('selectedMovie', cookieValue);
     }
+  }
+  async function handleSave() {
+    const response = await fetch('api/movies/history', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        movies: recommendedMovies,
+        csrfToken: props.csrfToken,
+      }),
+    });
+    const data = await response.json();
+    return data;
   }
   return (
     <>
@@ -211,6 +226,13 @@ export default function Movies(props: Props) {
                 startIcon={<LiveTvIcon />}
               >
                 Get new recommendations!
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<SaveIcon />}
+                onClick={handleSave}
+              >
+                Save to history!
               </Button>
             </Grid>
           ) : isRecommending ? (

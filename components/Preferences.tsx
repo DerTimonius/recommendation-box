@@ -17,7 +17,7 @@ export default function Preferences({ csrfToken, preferences }: Props) {
   const [saveSuccessful, setSaveSuccessful] = useState(false);
 
   async function handleClick() {
-    const response = await fetch('/api/changeBollywoodSetting', {
+    const response = await fetch('/api/user/changeBollywoodSetting', {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',

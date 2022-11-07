@@ -1,19 +1,18 @@
 import bcrypt from 'bcrypt';
-import cookie from 'cookie';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSessionByToken } from '../../database/sessions';
+import { getSessionByToken } from '../../../database/sessions';
 import {
-  deleteUserById,
   getUserByToken,
   getUserWithPasswordByUsername,
-} from '../../database/user';
-import { validateTokenFromCsrfSecret } from '../../utils/csrf';
+  updatePasswordById,
+} from '../../../database/user';
+import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
 
-export default async function hanlder(
+export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse,
 ) {
-  if (request.method !== 'DELETE') {
+  if (request.method !== 'PUT') {
     return response
       .status(400)
       .json({ errors: { message: 'Wrong request method' } });
@@ -46,28 +45,37 @@ export default async function hanlder(
   if (!fullUser) {
     return response.status(400).json({ errors: { message: 'user not found' } });
   }
-  // compare entered password with password hash
-  const password = request.body.password;
-  if (!password || typeof password !== 'string') {
+
+  // check if both passwords were sent in the request
+  const oldPassword = request.body.password;
+  const newPassword = request.body.newPassword;
+  if (
+    !oldPassword ||
+    !newPassword ||
+    typeof newPassword !== 'string' ||
+    typeof oldPassword !== 'string'
+  ) {
     return response
       .status(400)
       .json({ errors: { message: 'Invalid password input' } });
   }
-  const isPasswordValid = await bcrypt.compare(password, fullUser.passwordHash);
+  // check if old password is correct
+  const isPasswordValid = await bcrypt.compare(
+    oldPassword,
+    fullUser.passwordHash,
+  );
   if (!isPasswordValid) {
     return response
       .status(400)
       .json({ errors: { message: 'Incorrect password' } });
   }
-  const deletedUser = await deleteUserById(user.id);
-  return response
-    .status(200)
-    .setHeader(
-      'Set-Cookie',
-      cookie.serialize('sessionToken', '', {
-        maxAge: -1,
-        path: '/',
-      }),
-    )
-    .json({ user: deletedUser });
+  // create a new password hash
+  const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  const updatedUser = await updatePasswordById(fullUser.id, newPasswordHash);
+  if (!updatedUser) {
+    return response
+      .status(400)
+      .json({ errors: { message: 'user could not be updated' } });
+  }
+  return response.status(200).json({ user: updatedUser });
 }

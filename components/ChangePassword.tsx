@@ -25,7 +25,7 @@ export default function ChangePassword({ csrfToken }: Props) {
   ) {
     event.preventDefault();
     if (newPassword === confirmedPassword) {
-      const response = await fetch('/api/changePassword', {
+      const response = await fetch('/api/user/changePassword', {
         method: 'PUT',
         headers: {
           'content-type': 'application/json',

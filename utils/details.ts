@@ -5,7 +5,6 @@ export default async function getMovieDetails(title: string, year: number) {
     }&t=${title.replace(' ', '+')}&y=${year}`,
   );
   let dataOMDB = await responseOMDB.json();
-  console.log(`OMDB data for ${title}`, dataOMDB);
   if ('Error' in dataOMDB) {
     const responseWithoutYear = await fetch(
       `http://www.omdbapi.com/?apikey=${
