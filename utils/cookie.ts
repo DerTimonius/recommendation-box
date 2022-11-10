@@ -2,6 +2,7 @@ import cookie from 'cookie';
 import Cookies from 'js-cookie';
 import { Session } from '../database/sessions';
 import { Movie } from '../pages/movies';
+import { CookieTestType } from './__tests__/cookie.test';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,7 +28,10 @@ export function getCookie(key: string) {
     return undefined;
   }
 }
-export function setCookie(key: string, value: Movie[]) {
+export function setCookie(
+  key: string,
+  value: Movie[] | CookieTestType[] | string,
+) {
   return Cookies.set(key, JSON.stringify(value));
 }
 

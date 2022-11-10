@@ -4,6 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
+import TextField from '@mui/material/TextField';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
@@ -56,6 +57,7 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
             <Input
               type="password"
               id="password"
+              data-test-id="delete-user-password"
               value={password}
               onChange={(event) => setPassword(event.currentTarget.value)}
               error={errors.length > 0 && true}
@@ -64,6 +66,7 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
           <Button
             color="warning"
             variant="contained"
+            data-test-id="delete-user-button"
             onClick={handleDelete}
             startIcon={<ReportProblemIcon />}
           >

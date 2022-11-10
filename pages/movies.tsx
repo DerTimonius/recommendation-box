@@ -24,6 +24,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import NotLoggedIn from '../components/NotLoggedIn';
+import RecommendedMovies from '../components/RecommendedMovies';
 import { getSessionByToken } from '../database/sessions';
 import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
 import { createTokenFromSecret } from '../utils/csrf';
@@ -170,72 +172,18 @@ export default function Movies(props: Props) {
       </Head>
       {!('errors' in props) ? (
         <Grid container>
+          {/* check if the array recommendedMovies is empty or not */}
           {recommendedMovies.length > 0 ? (
-            <Grid item xs={9}>
-              <h2>Your recommendations</h2>
-              <div>
-                {recommendedMovies.map((movie) => {
-                  return (
-                    <Card key={`recommended movie ${movie.title}`}>
-                      <CardContent>
-                        <Typography variant="h5">
-                          {movie.title} ({movie.release_year})
-                        </Typography>
-                        {movie.poster ? (
-                          <Image
-                            src={`https://image.tmdb.org/t/p/original${movie.poster}`}
-                            height={300}
-                            width={220}
-                            alt={`Poster of ${movie.title}`}
-                          />
-                        ) : (
-                          <p>No poster found</p>
-                        )}
-                        <Typography variant="body1">{movie.cast}</Typography>
-                        <Typography variant="body2">
-                          {movie.description}
-                        </Typography>
-                        {movie.rating ? (
-                          <Typography variant="body2">
-                            IMDb Rating: {movie.rating}
-                          </Typography>
-                        ) : null}
-                        {movie.tmdbId ? (
-                          <MUILink
-                            href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            underline="hover"
-                          >
-                            Learn more at TMDb!
-                          </MUILink>
-                        ) : null}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setRecommendedMovies([]);
-                  setSelectedMovies([]);
-                  setSearchResult([]);
-                  deleteCookie('selectedMovie');
-                }}
-                startIcon={<LiveTvIcon />}
-              >
-                Get new recommendations!
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<SaveIcon />}
-                onClick={handleSave}
-              >
-                Save to history!
-              </Button>
-            </Grid>
-          ) : isRecommending ? (
+            <RecommendedMovies
+              recommendedMovies={recommendedMovies}
+              setSelectedMovies={setSelectedMovies}
+              setRecommendedMovies={setRecommendedMovies}
+              setSearchResult={setSearchResult}
+              deleteCookie={deleteCookie}
+              handleSave={handleSave}
+            />
+          ) : // if the array is not empty, check if the page is currently looking for recommendations
+          isRecommending ? (
             <Grid item xs={9}>
               <h2>Getting recommendations!</h2>
               <hr />
@@ -244,6 +192,7 @@ export default function Movies(props: Props) {
               <CircularProgress color="inherit" />
             </Grid>
           ) : (
+            // if it is not looking for recommendations, show the search field
             <Grid item xs={9}>
               <div css={movieStyles}>
                 <Typography variant="h3">
@@ -266,23 +215,28 @@ export default function Movies(props: Props) {
                     variant="contained"
                     onClick={handleSearch}
                     startIcon={<SearchIcon />}
+                    data-test-id="search-movie"
                   >
                     Search
                   </Button>
                 </FormGroup>
-
+                {/* check if the page is searching in the database */}
                 {isSearching ? (
                   <>
                     <p>Currently searching in our database, please hold!</p>
                     <CircularProgress color="inherit" />
                   </>
                 ) : (
+                  // if not, then display the search results
                   searchResult.length > 0 && (
-                    <div className="search-resdivts">
+                    <div className="search">
                       {searchResult.map((movie) => {
                         return (
                           // <li key={`movie_index ${movie.index}`}>
-                          <Card key={`movie_index ${movie.index}`}>
+                          <Card
+                            key={`movie_index ${movie.index}`}
+                            data-test-id={`search-result-movie-${movie.title}`}
+                          >
                             <CardContent>
                               <Typography variant="h6">
                                 {movie.title} ({movie.release_year})
@@ -293,10 +247,20 @@ export default function Movies(props: Props) {
                               </Typography>
                               <Button
                                 variant="contained"
+                                disabled={
+                                  selectedMovies.includes(movie) ||
+                                  selectedMovies.length >= 6
+                                }
                                 startIcon={<PlaylistAddIcon />}
+                                data-test-id={`add-search-result-${movie.title}`}
                                 onClick={() => {
-                                  handleSelect(movie);
-                                  setSelectedMovies([...selectedMovies, movie]);
+                                  if (!selectedMovies.includes(movie)) {
+                                    handleSelect(movie);
+                                    setSelectedMovies([
+                                      ...selectedMovies,
+                                      movie,
+                                    ]);
+                                  }
                                 }}
                               >
                                 Add to selected movies
@@ -318,12 +282,16 @@ export default function Movies(props: Props) {
                 <h3>Selected movies:</h3>
                 {selectedMovies.map((movie) => {
                   return (
-                    <div key={`selected movie ${movie.title}`}>
+                    <div
+                      key={`selected movie ${movie.title}`}
+                      data-test-id={`selected-movie-${movie.title}`}
+                    >
                       <h4>
                         {movie.title} ({movie.release_year})
                         <IconButton
                           onClick={() => handleDelete(movie.title)}
                           aria-label="delete"
+                          data-test-id={`delete-selected-movie-${movie.title}`}
                         >
                           <ClearIcon />
                         </IconButton>
@@ -360,6 +328,7 @@ export default function Movies(props: Props) {
                   onClick={handleRecommendations}
                   variant="outlined"
                   startIcon={<LiveTvIcon />}
+                  data-test-id="get-recommendations-button"
                 >
                   Get recommendations!
                 </Button>
@@ -368,15 +337,7 @@ export default function Movies(props: Props) {
           ) : null}
         </Grid>
       ) : (
-        <div>
-          <h3>
-            Do you also want to get recommendations based on multiple movies?
-          </h3>
-          <p>
-            <Link href="/login">Log in to your account</Link> or{' '}
-            <Link href="registration">create a free account</Link> to get going!
-          </p>
-        </div>
+        <NotLoggedIn />
       )}
     </>
   );

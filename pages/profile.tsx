@@ -79,7 +79,9 @@ export default function Profile(props: Props) {
           />
         </Head>
         <div>
-          <h3>Hello {props.user.username}</h3>
+          <Typography variant="h4" data-test-id="profile-greeting">
+            Hello {props.user.username}
+          </Typography>
           <div>
             <Typography variant="h5">Account settings</Typography>
             <hr />
@@ -88,6 +90,7 @@ export default function Profile(props: Props) {
                 expandIcon={<ExpandMore />}
                 aria-label="change-preferences"
                 id="change-preferences"
+                data-test-id="profile-preferences"
               >
                 <h3>Change preferences</h3>
               </AccordionSummary>
@@ -108,6 +111,7 @@ export default function Profile(props: Props) {
                 expandIcon={<ExpandMore />}
                 aria-label="change-password"
                 id="change-password"
+                data-test-id="profile-change-password"
               >
                 <h3>Change Password</h3>
               </AccordionSummary>
@@ -121,6 +125,7 @@ export default function Profile(props: Props) {
                 expandIcon={<ExpandMore />}
                 aria-label="delete-account"
                 id="delete-account"
+                data-test-id="profile-delete-account"
               >
                 <h3>Delete account</h3>
               </AccordionSummary>
@@ -151,6 +156,7 @@ export default function Profile(props: Props) {
                       key={`saved movie ${movie.title}`}
                       sx={{ width: 300 }}
                       variant="outlined"
+                      data-test-id={`saved-movie-${movie.title}`}
                     >
                       <CardContent>
                         <Typography variant="h5">
