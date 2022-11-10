@@ -57,6 +57,7 @@ export default function Preferences({ csrfToken, preferences }: Props) {
         variant="contained"
         color="primary"
         onClick={handleClick}
+        data-test-id="change-preferences-button"
       >
         {saveSuccessful ? <>Saved</> : <>Save Changes</>}
       </Button>

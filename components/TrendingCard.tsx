@@ -4,7 +4,6 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Collapse from '@mui/material/Collapse';
-// import Grid from '@mui/material/Grid';
 import MUILink from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
@@ -23,7 +22,7 @@ export default function TrendingCard({ movie }: Props) {
         height={250}
         image={`https://image.tmdb.org/t/p/original${movie.backdrop}`}
       />
-      <CardContent>
+      <CardContent data-test-id="trending-card">
         {movie.title !== movie.originalTitle ? (
           <>
             <Typography variant="h5">{movie.originalTitle}</Typography>

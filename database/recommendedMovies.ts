@@ -87,7 +87,6 @@ export async function addToHistory(
       addedMovies.push(partiallyKnownMovie);
     }
   }
-  console.log(addedMovies);
   const moviesInHistory = [];
   for (const movie of addedMovies) {
     if (movie) {

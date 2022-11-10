@@ -42,6 +42,7 @@ export default function ChangePassword({ csrfToken }: Props) {
         return;
       }
       setSaveSuccessful(true);
+      return;
     }
     setErrors([{ message: 'passwords are not matching' }]);
   }
@@ -91,6 +92,7 @@ export default function ChangePassword({ csrfToken }: Props) {
         variant="contained"
         color="primary"
         onClick={handleChangePassword}
+        data-test-id="change-password-button"
       >
         {saveSuccessful ? <>Saved</> : <>Save Password</>}
       </Button>

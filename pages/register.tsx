@@ -44,17 +44,8 @@ export default function Register({ refreshUserProfile }: Props) {
       const data: RegisterResponseType = await response.json();
       if ('errors' in data) {
         setErrors([...errors, data.errors]);
+        return;
       }
-      const returnTo = router.query.returnTo;
-      if (
-        returnTo &&
-        !Array.isArray(returnTo) && // Security: Validate returnTo parameter against valid path
-        // (because this is untrusted user input)
-        /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
-      ) {
-        return await router.push(returnTo);
-      }
-
       // refresh the user on state
       refreshUserProfile();
       // redirect user to user profile
@@ -88,6 +79,7 @@ export default function Register({ refreshUserProfile }: Props) {
               variant="filled"
               value={username}
               onChange={(event) => setUsername(event.currentTarget.value)}
+              // data-test-id="register-username"
             />
           </FormControl>
           <FormControl margin="normal">
@@ -98,6 +90,7 @@ export default function Register({ refreshUserProfile }: Props) {
               variant="filled"
               value={password1}
               onChange={(event) => setPassword1(event.currentTarget.value)}
+              data-test-id="register-password"
             />
           </FormControl>
           <FormControl margin="normal">
@@ -108,39 +101,18 @@ export default function Register({ refreshUserProfile }: Props) {
               variant="filled"
               value={password2}
               onChange={(event) => setPassword2(event.currentTarget.value)}
+              data-test-id="register-confirm-password"
             />
           </FormControl>
           <Button
             onClick={handleSubmit}
             variant="contained"
             startIcon={<AccountCircleIcon />}
+            data-test-id="register-user"
           >
             Create Account
           </Button>
         </FormGroup>
-        {/*  <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.currentTarget.value)}
-          />
-          <label htmlFor="password1">Password</label>
-          <input
-            type="password"
-            id="password1"
-            value={password1}
-            onChange={(event) => setPassword1(event.currentTarget.value)}
-          />
-          <label htmlFor="password2">Repeat password</label>
-          <input
-            type="password"
-            id="password2"
-            value={password2}
-            onChange={(event) => setPassword2(event.currentTarget.value)}
-          />
-          <button onClick={handleSubmit}>Create User</button>
-        </form> */}
       </div>
     </>
   );
