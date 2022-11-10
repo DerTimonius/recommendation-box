@@ -7,9 +7,9 @@ jobs:
     # Update env variables with your own database credentials
     env:
       PGHOST: localhost
-      PGDATABASE: spaceship_store
-      PGUSERNAME: admin_timon
-      PGPASSWORD: admin_timon
+      PGDATABASE: final_project
+      PGUSERNAME: final_project
+      PGPASSWORD: final_project
 
     steps:
       - name: Start preinstalled PostgreSQL on Ubuntu
