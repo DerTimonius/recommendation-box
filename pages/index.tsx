@@ -13,9 +13,9 @@ const landingPageStyles = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('https://images.pexels.com/photos/436413/pexels-photo-436413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+  /*   background-image: url('https://images.pexels.com/photos/436413/pexels-photo-436413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: cover; */
   height: 480px;
   * > * {
     backdrop-filter: blur(2px);
@@ -63,7 +63,13 @@ export default function Home() {
             {Array.isArray(trending)
               ? trending.map((movie) => {
                   return (
-                    <Grid item xs={3} key={`card for ${movie.title}`}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={5}
+                      lg={4}
+                      key={`card for ${movie.title}`}
+                    >
                       <TrendingCard movie={movie} />
                     </Grid>
                   );

@@ -2,27 +2,25 @@ import { css } from '@emotion/react';
 import ClearIcon from '@mui/icons-material/Clear';
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import SaveIcon from '@mui/icons-material/Save';
 import SearchIcon from '@mui/icons-material/Search';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import MUILink from '@mui/material/Link';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import NotLoggedIn from '../components/NotLoggedIn';
 import RecommendedMovies from '../components/RecommendedMovies';
@@ -229,7 +227,7 @@ export default function Movies(props: Props) {
                 ) : (
                   // if not, then display the search results
                   searchResult.length > 0 && (
-                    <div className="search">
+                    <Box>
                       {searchResult.map((movie) => {
                         return (
                           // <li key={`movie_index ${movie.index}`}>
@@ -241,10 +239,13 @@ export default function Movies(props: Props) {
                               <Typography variant="h6">
                                 {movie.title} ({movie.release_year})
                               </Typography>
-                              <Typography variant="body1">
-                                {' '}
-                                Cast: {movie.cast}
-                              </Typography>
+
+                              {movie.cast !== 'nan...' ? (
+                                <Typography variant="body1">
+                                  {' '}
+                                  Cast: {movie.cast}
+                                </Typography>
+                              ) : null}
                               <Button
                                 variant="contained"
                                 disabled={
@@ -270,36 +271,53 @@ export default function Movies(props: Props) {
                           // </li>
                         );
                       })}
-                    </div>
+                    </Box>
                   )
                 )}
               </div>
             </Grid>
           )}
           {selectedMovies.length > 0 ? (
-            <Grid item xs={3} sx={{ maxWidth: 240 }}>
-              <div css={selectedStyles}>
-                <h3>Selected movies:</h3>
+            <Grid
+              item
+              xs={3}
+              sx={{ maxWidth: 240, backdropFilter: 'blur(12px)' }}
+            >
+              <Box
+                css={selectedStyles}
+                sx={{
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  minHeight: '100vh',
+                  marginTop: '34px',
+                }}
+              >
+                <Typography variant="h5" sx={{ marginBottom: 4 }}>
+                  Selected movies:
+                </Typography>
                 {selectedMovies.map((movie) => {
                   return (
-                    <div
+                    <Box
                       key={`selected movie ${movie.title}`}
-                      data-test-id={`selected-movie-${movie.title}`}
+                      sx={{ paddingTop: '8px' }}
                     >
-                      <h4>
-                        {movie.title} ({movie.release_year})
-                        <IconButton
-                          onClick={() => handleDelete(movie.title)}
-                          aria-label="delete"
-                          data-test-id={`delete-selected-movie-${movie.title}`}
-                        >
-                          <ClearIcon />
-                        </IconButton>
-                      </h4>
-                    </div>
+                      <Box data-test-id={`selected-movie-${movie.title}`}>
+                        <Typography variant="h6">
+                          {movie.title} ({movie.release_year})
+                          <IconButton
+                            onClick={() => handleDelete(movie.title)}
+                            aria-label="delete"
+                            color="warning"
+                            data-test-id={`delete-selected-movie-${movie.title}`}
+                          >
+                            <ClearIcon />
+                          </IconButton>
+                        </Typography>
+                      </Box>
+                      <Divider />
+                    </Box>
                   );
                 })}
-                <FormControl>
+                <FormControl sx={{ marginTop: '24px' }}>
                   <FormLabel id="radio-options">Select type:</FormLabel>
                   <RadioGroup
                     aria-label="radio-options"
@@ -326,13 +344,13 @@ export default function Movies(props: Props) {
                 </FormControl>
                 <Button
                   onClick={handleRecommendations}
-                  variant="outlined"
+                  variant="contained"
                   startIcon={<LiveTvIcon />}
                   data-test-id="get-recommendations-button"
                 >
                   Get recommendations!
                 </Button>
-              </div>
+              </Box>
             </Grid>
           ) : null}
         </Grid>

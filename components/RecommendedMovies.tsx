@@ -1,5 +1,6 @@
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import SaveIcon from '@mui/icons-material/Save';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -26,46 +27,87 @@ export default function RecommendedMovies({
   handleSave,
 }: Props) {
   return (
-    <Grid item xs={9}>
-      <h2>Your recommendations</h2>
+    <Grid item xs={10} lg={9}>
+      <Typography variant="h3">Your tailor-made recommendations</Typography>
       <div>
         {recommendedMovies.map((movie) => {
           return (
             <Card
               key={`recommended movie ${movie.title}`}
               data-test-id={`recommended-movie-${movie.title}`}
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                marginBottom: '8px',
+                marginRight: '10px',
+              }}
             >
               <CardContent>
-                <Typography variant="h5">
-                  {movie.title} ({movie.release_year})
-                </Typography>
-                {movie.poster ? (
-                  <Image
-                    src={`https://image.tmdb.org/t/p/original${movie.poster}`}
-                    height={300}
-                    width={220}
-                    alt={`Poster of ${movie.title}`}
-                  />
-                ) : (
-                  <p>No poster found</p>
-                )}
-                <Typography variant="body1">{movie.cast}</Typography>
-                <Typography variant="body2">{movie.description}</Typography>
-                {movie.rating ? (
-                  <Typography variant="body2">
-                    IMDb Rating: {movie.rating}
-                  </Typography>
-                ) : null}
-                {movie.tmdbId ? (
-                  <MUILink
-                    href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    underline="hover"
-                  >
-                    Learn more at TMDb!
-                  </MUILink>
-                ) : null}
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                      }}
+                    >
+                      <Typography variant="h5">
+                        {movie.title} ({movie.release_year})
+                      </Typography>
+                      {movie.poster ? (
+                        <Image
+                          src={`https://image.tmdb.org/t/p/original${movie.poster}`}
+                          height={400}
+                          width={300}
+                          alt={`Poster of ${movie.title}`}
+                        />
+                      ) : (
+                        <Typography variant="caption">
+                          No poster found
+                        </Typography>
+                      )}{' '}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        margin: '50px 12px 25px 36px',
+                        maxWidth: '480px',
+                      }}
+                    >
+                      <Typography variant="body1">Cast: </Typography>
+                      <Typography variant="body2">{movie.cast}</Typography>
+                      {movie.director !== 'nan' && (
+                        <>
+                          <Typography variant="body1">Director: </Typography>
+                          <Typography variant="body2">
+                            {movie.director}
+                          </Typography>
+                        </>
+                      )}
+                      {movie.rating ? (
+                        <Typography variant="subtitle1">
+                          IMDb Rating: {movie.rating.toFixed(1)}
+                        </Typography>
+                      ) : null}
+                      {movie.tmdbId ? (
+                        <MUILink
+                          href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          underline="hover"
+                          color="secondary"
+                        >
+                          Learn more at TMDb!
+                        </MUILink>
+                      ) : null}
+                    </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Typography variant="subtitle1">Plot Summary</Typography>
+                    <Typography variant="body1">{movie.description}</Typography>
+                  </Box>
+                </Box>
               </CardContent>
             </Card>
           );
@@ -80,6 +122,7 @@ export default function RecommendedMovies({
           deleteCookie('selectedMovie');
         }}
         startIcon={<LiveTvIcon />}
+        color="secondary"
         data-test-id="new-recommendations-button"
       >
         Get new recommendations!
@@ -89,6 +132,7 @@ export default function RecommendedMovies({
         startIcon={<SaveIcon />}
         onClick={handleSave}
         data-test-id="save-recommendations-button"
+        color="info"
       >
         Save to history!
       </Button>

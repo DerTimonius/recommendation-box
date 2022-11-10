@@ -85,7 +85,7 @@ def get_best_movie_rec(movie_input_id_list, options, preferences):
   # sort the movies according to their total score and return the top 3 in JSON format, so it can be read with JS later
   top_movies = sorted(total_scores, key=lambda x: x["total_score"], reverse=True)
   top_movies_list = [df_combined.iloc[top_movies[i]["movie_id"]] for i in range(3)]
-  output = [{"title": top_movies_list[i]["title"], "listed_in": top_movies_list[i]["listed_in"], "director": str(top_movies_list[i]["director"]), "release_year": int(top_movies_list[i]["release_year"]), "type": top_movies_list[i]["type"], "description":top_movies_list[i]["description"]} for i in range(3)]
+  output = [{"title": top_movies_list[i]["title"], "listed_in": top_movies_list[i]["listed_in"], "director": str(top_movies_list[i]["director"]), "release_year": int(top_movies_list[i]["release_year"]), "type": top_movies_list[i]["type"], "description":top_movies_list[i]["description"], "cast": str(top_movies_list[i]["cast"])} for i in range(3)]
   return json.dumps(output, allow_nan=True)
 
 

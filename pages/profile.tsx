@@ -3,11 +3,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
@@ -37,7 +37,6 @@ export default function Profile(props: Props) {
       .then((res) => res.json())
       .then((data) => {
         setSavedRecommendations(data.history);
-        console.log(data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -78,14 +77,22 @@ export default function Profile(props: Props) {
             content={`Profile page of ${props.user.username}`}
           />
         </Head>
-        <div>
+        <main>
           <Typography variant="h4" data-test-id="profile-greeting">
             Hello {props.user.username}
           </Typography>
           <div>
             <Typography variant="h5">Account settings</Typography>
             <hr />
-            <Accordion sx={{ width: 800 }}>
+            <Accordion
+              sx={{
+                width: 800,
+                background: 'rgba(255, 255, 255, 0.5)',
+                '@media (max-width: 720px)': {
+                  width: '360px',
+                },
+              }}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMore />}
                 aria-label="change-preferences"
@@ -106,7 +113,15 @@ export default function Profile(props: Props) {
                 />
               </AccordionDetails>
             </Accordion>
-            <Accordion sx={{ width: 800 }}>
+            <Accordion
+              sx={{
+                width: 800,
+                background: 'rgba(255, 255, 255, 0.5)',
+                '@media (max-width: 720px)': {
+                  width: '360px',
+                },
+              }}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMore />}
                 aria-label="change-password"
@@ -120,7 +135,15 @@ export default function Profile(props: Props) {
                 <ChangePassword csrfToken={props.csrfToken} />
               </AccordionDetails>
             </Accordion>
-            <Accordion sx={{ width: 800 }}>
+            <Accordion
+              sx={{
+                width: 800,
+                background: 'rgba(255, 255, 255, 0.5)',
+                '@media (max-width: 720px)': {
+                  width: '360px',
+                },
+              }}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMore />}
                 aria-label="delete-account"
@@ -139,60 +162,69 @@ export default function Profile(props: Props) {
           </div>
           <hr />
           <div>
-            <Typography variant="h5">Saved recommendations</Typography>
+            <Typography variant="h5">Your saved recommendations</Typography>
             <hr />
             {savedRecommendations.length > 0 ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  overflow: 'hidden',
-                  gap: 1,
-                }}
+              <Grid
+                container
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={0.5}
               >
                 {savedRecommendations.map((movie) => {
                   return (
-                    <Card
+                    <Grid
+                      item
                       key={`saved movie ${movie.title}`}
-                      sx={{ width: 300 }}
-                      variant="outlined"
-                      data-test-id={`saved-movie-${movie.title}`}
+                      xs={12}
+                      sm={4}
+                      lg={3}
                     >
-                      <CardContent>
-                        <Typography variant="h5">
-                          {movie.title} ({movie.releaseYear})
-                        </Typography>
-                        {movie.poster ? (
-                          <Image
-                            src={`https://image.tmdb.org/t/p/original${movie.poster}`}
-                            height={200}
-                            width={150}
-                            alt={`Poster of ${movie.title}`}
-                          />
-                        ) : (
-                          <p>No poster found</p>
-                        )}
-                        <Typography variant="body1">{movie.cast}</Typography>
-                        <Typography variant="body2">
-                          {movie.description}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          startIcon={<DeleteOutlineIcon />}
-                          onClick={() =>
-                            handleDeleteSaved(movie.title, movie.releaseYear)
-                          }
-                        >
-                          Remove
-                        </Button>
-                      </CardActions>
-                    </Card>
+                      <Card
+                        key={`saved movie ${movie.title}`}
+                        sx={{
+                          width: 300,
+                          background: 'rgba(255, 255, 255, 0.7)',
+                        }}
+                        variant="outlined"
+                        data-test-id={`saved-movie-${movie.title}`}
+                      >
+                        <CardContent>
+                          <Typography variant="h5">
+                            {movie.title} ({movie.releaseYear})
+                          </Typography>
+                          {movie.poster ? (
+                            <Image
+                              src={`https://image.tmdb.org/t/p/original${movie.poster}`}
+                              height={250}
+                              width={180}
+                              alt={`Poster of ${movie.title}`}
+                            />
+                          ) : (
+                            <p>No poster found</p>
+                          )}
+                          <Typography variant="body1">
+                            {movie.description}
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Button
+                            variant="outlined"
+                            color="warning"
+                            startIcon={<DeleteOutlineIcon />}
+                            onClick={() =>
+                              handleDeleteSaved(movie.title, movie.releaseYear)
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
                   );
                 })}
-              </Box>
+              </Grid>
             ) : (
               <>
                 <Typography variant="h5">Nothing to show!</Typography>
@@ -202,7 +234,7 @@ export default function Profile(props: Props) {
               </>
             )}
           </div>
-        </div>
+        </main>
       </>
     );
   }

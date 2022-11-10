@@ -1,7 +1,34 @@
+@font-face {
+  font-family: 'Quicksand';
+  src: url(../assets/fonts/Quicksand-Bold.ttf);
+  src: url(../assets/fonts/Quicksand-Light.ttf);
+  src: url(../assets/fonts/Quicksand-Medium.ttf);
+  src: url(../assets/fonts/Quicksand-Regular.ttf);
+  src: url(../assets/fonts/Quicksand-SemiBold.ttf);
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
+
+  /* background: linear-gradient(
+    180deg,
+    rgba(255, 191, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 100%
+  ); */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 243, 176, 1) 0%,
+    rgba(84, 11, 14, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 14%,
+    rgba(40, 53, 147, 1) 100%
+  );
+
+  min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
