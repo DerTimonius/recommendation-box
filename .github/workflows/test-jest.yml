@@ -8,6 +8,13 @@ jobs:
     # version of Ubuntu (a Linux flavor)
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ubuntu-latest
+    env:
+      PGHOST: localhost
+      PGDATABASE: final_project
+      PGUSERNAME: final_project
+      PGPASSWORD: final_project
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
     steps:
       # Use the official Checkout action (clones the GitHub repo):
       # https://github.com/actions/checkout
