@@ -6,9 +6,10 @@ export async function checkRecommendations(
   selectedMovieIds: string,
   options: string,
   preferences: boolean,
+  numberOfMovies: number,
 ) {
   const { stdout } = await execaCommand(
-    `python ./utils/python/recommend.py ${selectedMovieIds} ${options} ${preferences}`,
+    `python ./utils/python/recommend.py ${selectedMovieIds} ${numberOfMovies} ${options} ${preferences}`,
   );
   return stdout;
 }

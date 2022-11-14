@@ -3,9 +3,14 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import sys
 import json
+import os
 
 # read the file into a pandas dataframe and delete the "index" column, since it will be added later (and more accurately)
-df_combined = pd.read_csv("~/Documents/Coding/datasets/combined_test.csv")
+current_path = os.path.dirname(__file__)
+dir_name = "datasets"
+filename = "combined_test.csv"
+complete_path = os.path.join(current_path, dir_name, filename)
+df_combined = pd.read_csv(complete_path)
 df_combined.drop(["index"], axis=1, inplace=True)
 
 def add_score_to_df( index, df,cosine_similarity_matrix):
@@ -18,7 +23,6 @@ def add_score_to_df( index, df,cosine_similarity_matrix):
   df: dataframe, which is going to be used to add the score and index
   cosine_similarity_matrix: list of floats ranging from 0.0 to 1.0, from lowest similarity to highest (which would be the same movie/show as the input)
   """
-  # similarity_scores = list(enumerate(cosine_similarity_matrix[index]))
   similarity_scores = list(enumerate(cosine_similarity_matrix[int(df.index[df["Unnamed: 0"] == index][0])]))
   similarity_scores_sorted = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
   score = [t[1] for t in similarity_scores_sorted]
@@ -34,7 +38,7 @@ def get_score(df, movie_id):
   movie_score = df[(df["index"] == movie_id)]["score"]
   return movie_score
 
-def get_best_movie_rec(movie_input_id_list, options, preferences):
+def get_best_movie_rec(movie_input_id_list, number_of_movies, options, preferences):
 
   # Check the input options if only movies or tv shows should be checked
   if options == "movie":
@@ -84,12 +88,13 @@ def get_best_movie_rec(movie_input_id_list, options, preferences):
       continue
   # sort the movies according to their total score and return the top 3 in JSON format, so it can be read with JS later
   top_movies = sorted(total_scores, key=lambda x: x["total_score"], reverse=True)
-  top_movies_list = [df_combined.iloc[top_movies[i]["movie_id"]] for i in range(3)]
-  output = [{"title": top_movies_list[i]["title"], "listed_in": top_movies_list[i]["listed_in"], "director": str(top_movies_list[i]["director"]), "release_year": int(top_movies_list[i]["release_year"]), "type": top_movies_list[i]["type"], "description":top_movies_list[i]["description"], "cast": str(top_movies_list[i]["cast"])} for i in range(3)]
+  top_movies_list = [df_combined.iloc[top_movies[i]["movie_id"]] for i in range(int(number_of_movies))]
+  output = [{"title": top_movies_list[i]["title"], "listed_in": top_movies_list[i]["listed_in"], "director": str(top_movies_list[i]["director"]), "release_year": int(top_movies_list[i]["release_year"]), "type": top_movies_list[i]["type"], "description":top_movies_list[i]["description"], "cast": str(top_movies_list[i]["cast"])} for i in range(int(number_of_movies))]
   return json.dumps(output, allow_nan=True)
 
 
-movie_list = sys.argv[1:-2]
+movie_list = sys.argv[1:-3]
+number_of_movies = sys.argv[-3]
 options = sys.argv[-2]
 preferences = sys.argv[-1]
-print(get_best_movie_rec(movie_list, options, preferences))
+print(get_best_movie_rec(movie_list, number_of_movies, options, preferences))

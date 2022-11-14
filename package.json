@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "dotenv ley",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --forceExit"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",

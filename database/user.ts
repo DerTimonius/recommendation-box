@@ -17,7 +17,8 @@ export async function createUser(name: string, passwordHash: string) {
   VALUES(${name}, ${passwordHash})
   RETURNING
     id,
-    username`;
+    username,
+    preferences`;
   return user;
 }
 

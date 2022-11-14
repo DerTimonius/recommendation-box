@@ -6,11 +6,13 @@ test(
     let selectedMovieIds = '123 456 789';
     let options = 'both';
     let preferences = true;
+    const count = 3;
     expect(
       typeof (await checkRecommendations(
         selectedMovieIds,
         options,
         preferences,
+        count,
       )),
     ).toEqual('string');
     selectedMovieIds += ' 1234';
@@ -21,6 +23,7 @@ test(
         selectedMovieIds,
         options,
         preferences,
+        count,
       )),
     ).toEqual('string');
     options = 'tv';
@@ -29,6 +32,7 @@ test(
         selectedMovieIds,
         options,
         preferences,
+        count,
       )),
     ).toEqual('string');
   },

@@ -1,8 +1,12 @@
 import { css } from '@emotion/react';
 import ClearIcon from '@mui/icons-material/Clear';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import SearchIcon from '@mui/icons-material/Search';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -48,14 +52,6 @@ const movieStyles = css`
   }
 `;
 
-const selectedStyles = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px;
-  padding-top: 48px;
-  height: 100vh;
-`;
 // snake_case in release_year because of Python naming convention, where the data comes from
 export type Movie = {
   title: string;
@@ -88,14 +84,23 @@ export default function Movies(props: Props) {
   >([]);
   const [isRecommending, setIsRecommending] = useState(false);
   const [options, setOptions] = useState('both');
+  const [wantedNumberOfMovies, setWantedNumberOfMovies] = useState<number>(3);
 
+  if (!props.csrfToken) {
+    deleteCookie('selectedMovie');
+  }
   useEffect(() => {
     const cookie = getCookie('selectedMovie');
     if (cookie) {
       setSelectedMovies(cookie);
     }
   }, []);
-  async function handleSearch() {
+  async function handleSearch(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>,
+  ) {
+    event.preventDefault();
     setSearchResult([]);
     setIsSearching(true);
     const response = await fetch('/api/movies/search', {
@@ -104,8 +109,8 @@ export default function Movies(props: Props) {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        searchItem: searchInput,
         csrfToken: props.csrfToken,
+        searchItem: searchInput,
       }),
     });
     const data = await response.json();
@@ -126,6 +131,7 @@ export default function Movies(props: Props) {
         selectedMovies: selectedMoviesIndex.join(' '),
         csrfToken: props.csrfToken,
         options: options,
+        wantedNumber: wantedNumberOfMovies,
       }),
     });
     const data = await response.json();
@@ -135,6 +141,11 @@ export default function Movies(props: Props) {
   function handleDelete(title: Movie['title']) {
     const movieList = selectedMovies;
     setSelectedMovies(movieList.filter((movie) => movie.title !== title));
+    const listInCookie: Movie[] = getCookie('selectedMovie');
+    const newCookieValue = listInCookie.filter(
+      (movie) => movie.title !== title,
+    );
+    setCookie('selectedMovie', newCookieValue);
   }
   function handleSelect(movie: Movie) {
     const cookieValue = getCookie('selectedMovie');
@@ -168,6 +179,8 @@ export default function Movies(props: Props) {
           content="Get movie recommendations based on your inputs"
         />
       </Head>
+
+      {/* check if the user is logged in or not */}
       {!('errors' in props) ? (
         <Grid container>
           {/* check if the array recommendedMovies is empty or not */}
@@ -183,9 +196,11 @@ export default function Movies(props: Props) {
           ) : // if the array is not empty, check if the page is currently looking for recommendations
           isRecommending ? (
             <Grid item xs={9}>
-              <h2>Getting recommendations!</h2>
+              <Typography variant="h2">Getting recommendations!</Typography>
               <hr />
-              <p>This might take up to 30 seconds, please be patient.</p>
+              <Typography variant="body1">
+                This might take up to 30 seconds, please be patient.
+              </Typography>
               <br />
               <CircularProgress color="inherit" />
             </Grid>
@@ -197,31 +212,51 @@ export default function Movies(props: Props) {
                   Discover new entertainment options
                 </Typography>
                 <br />
-                <FormGroup sx={{ width: 480 }}>
-                  <TextField
-                    id="search-field"
-                    fullWidth={true}
-                    variant="outlined"
-                    label="Search Movie/TV show"
-                    value={searchInput}
-                    disabled={selectedMovies.length >= 6}
-                    onChange={(event) =>
-                      setSearchInput(event.currentTarget.value)
-                    }
-                  />
-                  <Button
-                    variant="contained"
-                    onClick={handleSearch}
-                    startIcon={<SearchIcon />}
-                    data-test-id="search-movie"
-                  >
-                    Search
-                  </Button>
+                <FormGroup
+                  sx={{
+                    width: 480,
+                    marginBottom: '12px',
+                    '@media (max-width: 720px)': {
+                      width: 200,
+                    },
+                  }}
+                >
+                  <form onSubmit={handleSearch}>
+                    <TextField
+                      id="search-field"
+                      fullWidth={true}
+                      variant="outlined"
+                      label="Search Movie/TV show"
+                      value={searchInput}
+                      disabled={selectedMovies.length >= 6}
+                      onChange={(event) =>
+                        setSearchInput(event.currentTarget.value)
+                      }
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={handleSearch}
+                      startIcon={<SearchIcon />}
+                      data-test-id="search-movie"
+                      type="submit"
+                      sx={{
+                        width: 480,
+                        '@media (max-width: 720px)': {
+                          width: 200,
+                        },
+                      }}
+                      disabled={selectedMovies.length >= 6}
+                    >
+                      Search
+                    </Button>
+                  </form>
                 </FormGroup>
                 {/* check if the page is searching in the database */}
                 {isSearching ? (
                   <>
-                    <p>Currently searching in our database, please hold!</p>
+                    <Typography variant="body1">
+                      Currently searching in our database, please hold!
+                    </Typography>
                     <CircularProgress color="inherit" />
                   </>
                 ) : (
@@ -230,7 +265,6 @@ export default function Movies(props: Props) {
                     <Box>
                       {searchResult.map((movie) => {
                         return (
-                          // <li key={`movie_index ${movie.index}`}>
                           <Card
                             key={`movie_index ${movie.index}`}
                             data-test-id={`search-result-movie-${movie.title}`}
@@ -268,7 +302,6 @@ export default function Movies(props: Props) {
                               </Button>
                             </CardContent>
                           </Card>
-                          // </li>
                         );
                       })}
                     </Box>
@@ -277,18 +310,27 @@ export default function Movies(props: Props) {
               </div>
             </Grid>
           )}
+          {/* show the sidebar on the left only if a movie has already been selected d*/}
           {selectedMovies.length > 0 ? (
             <Grid
               item
               xs={3}
-              sx={{ maxWidth: 240, backdropFilter: 'blur(12px)' }}
+              sx={{
+                maxWidth: 240,
+                backdropFilter: 'blur(12px)',
+              }}
             >
               <Box
-                css={selectedStyles}
                 sx={{
                   background: 'rgba(255, 255, 255, 0.5)',
-                  minHeight: '100vh',
+                  height: 'max-content',
                   marginTop: '34px',
+                  borderRadius: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: 2,
+                  paddingTop: 6,
                 }}
               >
                 <Typography variant="h5" sx={{ marginBottom: 4 }}>
@@ -342,17 +384,58 @@ export default function Movies(props: Props) {
                     />
                   </RadioGroup>
                 </FormControl>
+                <FormControl>
+                  <FormLabel id="wanted-number-movies">
+                    How many recommendations do you want?
+                  </FormLabel>
+                  <TextField
+                    type="number"
+                    value={wantedNumberOfMovies}
+                    onChange={(event) => {
+                      if (
+                        Number(event.target.value) > 0 &&
+                        Number(event.target.value) <= 10
+                      ) {
+                        setWantedNumberOfMovies(Number(event.target.value));
+                      }
+                    }}
+                  />
+                </FormControl>
                 <Button
                   onClick={handleRecommendations}
                   variant="contained"
                   startIcon={<LiveTvIcon />}
                   data-test-id="get-recommendations-button"
+                  sx={{ marginTop: 1 }}
                 >
                   Get recommendations!
                 </Button>
               </Box>
             </Grid>
           ) : null}
+          <Accordion sx={{ marginTop: 3 }}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-label="accordion-panel"
+            >
+              <Typography variant="h5">Disclaimer</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="subtitle1">
+                This application is built with a dataset of around 19.000 movies
+                and TV shows, collected from the american Netflix and Amazon
+                Prime listing. The set was up to date until September 2021, so
+                anything after will not be part of this dataset.
+              </Typography>
+              <Typography variant="subtitle1">
+                Another thing: As of today the search bar does not yet feature
+                autocomplete and it will always show stuff, even if it's not
+                remotely similar to the move you entered. If what you're looking
+                for is not in the search results, it's sadly not in the dataset
+                yet.
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       ) : (
         <NotLoggedIn />

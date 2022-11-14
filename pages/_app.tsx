@@ -11,7 +11,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import { Box, CssBaseline, List } from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import { blueGrey } from '@mui/material/colors';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -19,20 +18,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {
-  createTheme,
-  CSSObject,
-  styled,
-  Theme,
-  ThemeProvider,
-  useTheme,
-} from '@mui/material/styles';
+import { CSSObject, styled, Theme, ThemeProvider } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { AppProps } from 'next/app';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import Footer from '../components/Footer';
 import { User } from '../database/user';
 import { customTheme } from '../styles/customTheme';
 
@@ -40,11 +31,6 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-/* const customTheme = createTheme({
-  palette: {
-    primary: blueGrey,
-  },
-}); */
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -119,7 +105,6 @@ function Anchor({ children, ...restProps }: any) {
 function MyApp({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState<User | undefined>();
   const [open, setOpen] = useState(true);
-  const theme = useTheme();
   function handleClick() {
     setOpen(!open);
   }

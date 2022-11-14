@@ -4,7 +4,7 @@ import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
@@ -43,9 +43,12 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
   }
   return (
     <div>
-      <h4>Sad to see you leave!</h4>
+      <Typography variant="h5">Sad to see you leave!</Typography>
+
       <br />
-      <p>Please enter your password to delete your account!</p>
+      <Typography variant="body1">
+        Please enter your password to delete your account!
+      </Typography>
       <div>
         {errors.length > 0 &&
           errors.map((error) => (

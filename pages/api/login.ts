@@ -35,8 +35,7 @@ export default async function handler(
     if (!user) {
       return response.status(400).json({
         errors: {
-          message:
-            'User not found, check your username again or register first',
+          message: 'Password and/or username incorrect!',
         },
       });
     }
@@ -45,7 +44,7 @@ export default async function handler(
     if (!isPasswordValid) {
       return response
         .status(400)
-        .json({ errors: { message: 'Incorrect password' } });
+        .json({ errors: { message: 'Password and/or username incorrect!' } });
     }
     // create session token, csrf secret and the session cookie
     const sessionToken = crypto.randomBytes(80).toString('base64');

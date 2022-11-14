@@ -24,6 +24,7 @@ export default function ChangePassword({ csrfToken }: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
+    setErrors([]);
     if (newPassword === confirmedPassword) {
       const response = await fetch('/api/user/changePassword', {
         method: 'PUT',
@@ -49,53 +50,62 @@ export default function ChangePassword({ csrfToken }: Props) {
   return (
     <>
       <FormGroup>
-        <FormControl margin="normal">
-          <InputLabel htmlFor="current-password">Current Password</InputLabel>
-          <Input
-            id="current-password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.currentTarget.value)}
-            margin="dense"
-            type="password"
-          />
-        </FormControl>
-        <FormControl margin="normal">
-          <InputLabel htmlFor="new-password">New Password</InputLabel>
-          <Input
-            id="new-password"
-            required={true}
-            value={newPassword}
-            onChange={(event) => setNewPassword(event.currentTarget.value)}
-            margin="dense"
-            type="password"
-          />
-        </FormControl>
-        <FormControl margin="normal">
-          <InputLabel htmlFor="confirmed-password">
-            Confirm New Password
-          </InputLabel>
-          <Input
-            id="confirmed-password"
-            required={true}
-            value={confirmedPassword}
-            onChange={(event) =>
-              setConfirmedPassword(event.currentTarget.value)
-            }
-            margin="dense"
-            type="password"
-          />
-        </FormControl>
+        <form
+          onSubmit={handleChangePassword}
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
+          <FormControl margin="normal">
+            <InputLabel htmlFor="current-password">Current Password</InputLabel>
+            <Input
+              id="current-password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.currentTarget.value)}
+              margin="dense"
+              type="password"
+              error={errors.length > 0}
+            />
+          </FormControl>
+          <FormControl margin="normal">
+            <InputLabel htmlFor="new-password">New Password</InputLabel>
+            <Input
+              id="new-password"
+              required={true}
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.currentTarget.value)}
+              margin="dense"
+              type="password"
+              error={errors.length > 0}
+            />
+          </FormControl>
+          <FormControl margin="normal">
+            <InputLabel htmlFor="confirmed-password">
+              Confirm New Password
+            </InputLabel>
+            <Input
+              error={errors.length > 0}
+              id="confirmed-password"
+              required={true}
+              value={confirmedPassword}
+              onChange={(event) =>
+                setConfirmedPassword(event.currentTarget.value)
+              }
+              margin="dense"
+              type="password"
+            />
+          </FormControl>
+          <Button
+            startIcon={saveSuccessful ? <DoneIcon /> : <SaveIcon />}
+            variant="contained"
+            color="primary"
+            onClick={handleChangePassword}
+            data-test-id="change-password-button"
+            type="submit"
+          >
+            {saveSuccessful ? <>Saved</> : <>Save Password</>}
+          </Button>
+        </form>
       </FormGroup>
-      <Button
-        startIcon={saveSuccessful ? <DoneIcon /> : <SaveIcon />}
-        variant="contained"
-        color="primary"
-        onClick={handleChangePassword}
-        data-test-id="change-password-button"
-      >
-        {saveSuccessful ? <>Saved</> : <>Save Password</>}
-      </Button>
       {errors.length > 0 &&
         errors.map((error) => {
           return <h4 key={`error ${error.message}`}>{error.message}</h4>;

@@ -13,9 +13,6 @@ const landingPageStyles = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /*   background-image: url('https://images.pexels.com/photos/436413/pexels-photo-436413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
-  background-repeat: no-repeat;
-  background-size: cover; */
   height: 480px;
   * > * {
     backdrop-filter: blur(2px);
@@ -51,14 +48,15 @@ export default function Home() {
         <>
           <div css={landingPageStyles}>{null}</div>
           <Typography variant="h5" align="center">
-            Currently Trending
+            Currently Trending on The Movie Database
           </Typography>
           <Grid
             container
             direction="row"
-            alignItems="center"
+            alignItems="flexStart"
             justifyContent="center"
             spacing={2}
+            sx={{ marginTop: 2 }}
           >
             {Array.isArray(trending)
               ? trending.map((movie) => {

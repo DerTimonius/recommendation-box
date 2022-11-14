@@ -10,6 +10,8 @@ jobs:
       PGDATABASE: final_project
       PGUSERNAME: final_project
       PGPASSWORD: final_project
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
 
     steps:
       - name: Start preinstalled PostgreSQL on Ubuntu
