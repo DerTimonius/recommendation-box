@@ -1,11 +1,10 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {
-  Button,
-  FormControl,
-  FormGroup,
-  TextField,
-  Typography,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -30,6 +29,7 @@ export default function Login({ refreshUserProfile }: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
+
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {
@@ -43,16 +43,6 @@ export default function Login({ refreshUserProfile }: Props) {
       setErrors([...errors, data.errors]);
       return;
     }
-    const returnTo = router.query.returnTo;
-    if (
-      returnTo &&
-      !Array.isArray(returnTo) && // Security: Validate returnTo parameter against valid path
-      // (because this is untrusted user input)
-      /^\/[a-zA-Z0-9-?=/]*$/.test(returnTo)
-    ) {
-      return await router.push(returnTo);
-    }
-
     // refresh the user on state
     refreshUserProfile();
     // redirect user to user profile
@@ -69,53 +59,64 @@ export default function Login({ refreshUserProfile }: Props) {
         <Typography variant="h4">Login to get going</Typography>
         {errors.length > 0
           ? errors.map((error) => {
-              return <h5 key={`error ${error.message}`}>{error.message}</h5>;
+              return (
+                <Typography variant="subtitle1" key={`error ${error.message}`}>
+                  {error.message}
+                </Typography>
+              );
             })
           : null}
-        <FormGroup>
-          <FormControl margin="normal">
-            <TextField
-              id="username"
-              label="Username"
-              variant="filled"
-              value={username}
-              onChange={(event) => setUsername(event.currentTarget.value)}
-            />
-          </FormControl>
-          <FormControl margin="normal">
-            <TextField
-              type="password"
-              id="password"
-              label="Password"
-              variant="filled"
-              value={password}
-              onChange={(event) => setPassword(event.currentTarget.value)}
-            />
-          </FormControl>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            startIcon={<AccountCircleIcon />}
+        <Paper elevation={12}>
+          <FormGroup
+            sx={{
+              '@media (max-width: 720px)': {
+                width: 300,
+              },
+            }}
           >
-            Login
-          </Button>
-        </FormGroup>
-        {/* <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input
-            value={username}
-            onChange={(event) => setUsername(event.currentTarget.value)}
-            id="username"
-          />
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.currentTarget.value)}
-            id="userpasswordname"
-          />
-          <button onClick={handleSubmit}>Log In</button>
-        </form> */}
+            <form onSubmit={handleSubmit}>
+              <FormControl margin="normal">
+                <TextField
+                  id="username"
+                  label="Username"
+                  variant="filled"
+                  value={username}
+                  onChange={(event) => setUsername(event.currentTarget.value)}
+                  error={errors.length > 0}
+                  sx={{
+                    '@media (max-width: 720px)': {
+                      width: 270,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl margin="normal">
+                <TextField
+                  type="password"
+                  id="password"
+                  label="Password"
+                  variant="filled"
+                  value={password}
+                  error={errors.length > 0}
+                  onChange={(event) => setPassword(event.currentTarget.value)}
+                  sx={{
+                    '@media (max-width: 720px)': {
+                      width: 270,
+                    },
+                  }}
+                />
+              </FormControl>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                startIcon={<AccountCircleIcon />}
+                type="submit"
+              >
+                Login
+              </Button>
+            </form>
+          </FormGroup>
+        </Paper>
       </div>
     </>
   );

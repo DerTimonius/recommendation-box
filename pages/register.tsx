@@ -1,12 +1,10 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-// import { css } from '@emotion/react';
-import {
-  Button,
-  FormControl,
-  FormGroup,
-  TextField,
-  Typography,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -33,6 +31,7 @@ export default function Register({ refreshUserProfile }: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
+
     if (password1 === password2) {
       const response = await fetch('/api/register', {
         method: 'POST',
@@ -69,50 +68,80 @@ export default function Register({ refreshUserProfile }: Props) {
         <Typography variant="h4">Create an account and get started!</Typography>
         {errors.length > 0 &&
           errors.map((error) => {
-            return <h5 key={`error ${error.message}`}>{error.message}</h5>;
+            return (
+              <Typography variant="subtitle1" key={`error ${error.message}`}>
+                {error.message}
+              </Typography>
+            );
           })}
-        <FormGroup>
-          <FormControl margin="normal">
-            <TextField
-              id="username"
-              label="Username"
-              variant="filled"
-              value={username}
-              onChange={(event) => setUsername(event.currentTarget.value)}
-              // data-test-id="register-username"
-            />
-          </FormControl>
-          <FormControl margin="normal">
-            <TextField
-              type="password"
-              id="password"
-              label="Password"
-              variant="filled"
-              value={password1}
-              onChange={(event) => setPassword1(event.currentTarget.value)}
-              data-test-id="register-password"
-            />
-          </FormControl>
-          <FormControl margin="normal">
-            <TextField
-              type="password"
-              id="confirmed-password"
-              label="Confirm Password"
-              variant="filled"
-              value={password2}
-              onChange={(event) => setPassword2(event.currentTarget.value)}
-              data-test-id="register-confirm-password"
-            />
-          </FormControl>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            startIcon={<AccountCircleIcon />}
-            data-test-id="register-user"
+        <Paper elevation={12}>
+          <FormGroup
+            sx={{
+              '@media (max-width: 720px)': {
+                width: 300,
+              },
+            }}
           >
-            Create Account
-          </Button>
-        </FormGroup>
+            <form onSubmit={handleSubmit}>
+              <FormControl margin="normal">
+                <TextField
+                  id="username"
+                  label="Username"
+                  variant="filled"
+                  value={username}
+                  onChange={(event) => setUsername(event.currentTarget.value)}
+                  error={errors.length > 0}
+                  sx={{
+                    '@media (max-width: 720px)': {
+                      width: 270,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl margin="normal">
+                <TextField
+                  type="password"
+                  id="password"
+                  label="Password"
+                  variant="filled"
+                  value={password1}
+                  onChange={(event) => setPassword1(event.currentTarget.value)}
+                  error={errors.length > 0}
+                  sx={{
+                    '@media (max-width: 720px)': {
+                      width: 270,
+                    },
+                  }}
+                />
+              </FormControl>
+              <FormControl margin="normal">
+                <TextField
+                  type="password"
+                  id="confirmed-password"
+                  label="Confirm Password"
+                  variant="filled"
+                  value={password2}
+                  onChange={(event) => setPassword2(event.currentTarget.value)}
+                  error={errors.length > 0}
+                  sx={{
+                    '@media (max-width: 720px)': {
+                      width: 270,
+                    },
+                  }}
+                />
+              </FormControl>
+              <Button
+                onClick={handleSubmit}
+                variant="contained"
+                startIcon={<AccountCircleIcon />}
+                data-test-id="register-user"
+                type="submit"
+              >
+                Create Account
+              </Button>
+            </form>
+          </FormGroup>
+        </Paper>
       </div>
     </>
   );

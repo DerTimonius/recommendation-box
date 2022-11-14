@@ -55,8 +55,21 @@ export default async function handler(
       errors: { message: 'Movie List and/or Options missing or wrong type' },
     });
   }
+  const numberOfMovies: number = request.body.wantedNumber;
+  if (!numberOfMovies) {
+    return response
+      .status(400)
+      .json({
+        errors: { message: 'Wanted number of recommendations missing' },
+      });
+  }
   const result: RecommendedMovie[] = JSON.parse(
-    await checkRecommendations(selectedMovies, options, user.preferences),
+    await checkRecommendations(
+      selectedMovies,
+      options,
+      user.preferences,
+      numberOfMovies,
+    ),
   );
   const resultArray = await Promise.all(
     result.map(async (movie) => {

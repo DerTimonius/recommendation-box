@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
-import React from 'react';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 
 const aboutStyles = css`
   position: absolute;
@@ -17,30 +18,49 @@ const aboutStyles = css`
 function About() {
   return (
     <div css={aboutStyles}>
-      <h2>Final Project</h2>
+      <Typography variant="h2">Final Project</Typography>
       <hr />
-      <p>
+      <Typography variant="body1">
         This is my final project for the UpLeveled Web Development Bootcamp.
         What I tried to build was a movie recommendation system that two persons
         can use.
-      </p>
-      <p>
+      </Typography>
+      <Typography variant="body1">
         If they can't decide what movie or TV series to watch, each can pick
         three movies/series of the kind they would like to watch.
-      </p>
+      </Typography>
       <br />
-      <p>
-        I build a recommendation system using datasets from Netflix and Amazon
-        (INSERT LINK HERE) and machine learning/data science algorithms to
-        determine the best pick, that most fits each of the desired
-        movies/series.
-      </p>
-      <p>
+      <Typography variant="body1">
+        I build a recommendation system using datasets from{' '}
+        <Link href="https://www.kaggle.com/datasets/shivamb/netflix-shows">
+          Netflix
+        </Link>{' '}
+        and{' '}
+        <Link href="https://www.kaggle.com/datasets/shivamb/amazon-prime-movies-and-tv-shows">
+          Amazon
+        </Link>{' '}
+        and machine learning/data science algorithms to determine the best pick,
+        that most fits each of the desired movies/series.
+      </Typography>
+      <Typography variant="body1">
         This application also uses the{' '}
-        <abbr title="The Movie Database">TMDb</abbr> API to get further
-        informations of the movie (is it available at streaming platforms, is it
-        any good, provide links etc.)
-      </p>
+        <abbr title="The Movie Database">TMDb</abbr>{' '}
+        <Link href="https://developers.themoviedb.org/3/getting-started/introduction">
+          API
+        </Link>{' '}
+        to get further informations of the movie (is it available at streaming
+        platforms, is it any good, provide links etc.)
+      </Typography>
+      <Typography variant="h3" sx={{ margin: '16px 0 12px' }}>
+        What is about to come?
+      </Typography>
+      <Typography variant="body1">
+        The plan is to provide a poster and TMDb link with every movie and TV
+        show.
+      </Typography>
+      <Typography variant="body1">
+        Also, I will at some point add the dataset for Disney+ into the mix.
+      </Typography>
     </div>
   );
 }

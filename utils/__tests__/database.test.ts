@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import {
   createUser,
   deleteUserById,
@@ -12,6 +16,6 @@ test('create, get and delete a user', async () => {
   if (testUser) {
     expect(testUser.preferences).toBe(false);
     expect(await deleteUserById(testUser.id)).not.toBe(undefined);
-    expect(await getUserByUsername(username)).toBe(undefined);
   }
+  expect(await getUserByUsername(username)).toBe(undefined);
 });

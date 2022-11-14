@@ -5,8 +5,16 @@ import sys
 import json
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import os
 
-df_combined = pd.read_csv("~/documents/coding/datasets/searchfile.csv")
+# relative path for windows machines
+current_path = os.path.dirname(__file__)
+dir_name = "datasets"
+filename = "searchfile.csv"
+complete_path = os.path.join(current_path, dir_name, filename)
+df_combined = pd.read_csv(complete_path)
+# df_combined = pd.read_csv("~/Documents/Coding/datasets/searchfile.csv")
+
 
 
 def clean_title(title):

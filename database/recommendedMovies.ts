@@ -80,7 +80,7 @@ export async function addToHistory(
     } else {
       const [partiallyKnownMovie] = await sql<SavedRecommendedMovie[]>`
       INSERT INTO recommended_movie
-      (title, release_year, director, description, typeof)
+      (title, release_year, director, description, type)
     VALUES
       (${movie.title}, ${movie.release_year}, ${movie.director}, ${movie.description}, ${movie.type})
     RETURNING *`;

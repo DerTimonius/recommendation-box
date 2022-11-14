@@ -1,5 +1,6 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Link } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -99,7 +100,7 @@ export default function Profile(props: Props) {
                 id="change-preferences"
                 data-test-id="profile-preferences"
               >
-                <h3>Change preferences</h3>
+                <Typography variant="h5">Change preferences</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
@@ -128,7 +129,7 @@ export default function Profile(props: Props) {
                 id="change-password"
                 data-test-id="profile-change-password"
               >
-                <h3>Change Password</h3>
+                <Typography variant="h5">Change password</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>Change your password here </Typography>
@@ -150,7 +151,7 @@ export default function Profile(props: Props) {
                 id="delete-account"
                 data-test-id="profile-delete-account"
               >
-                <h3>Delete account</h3>
+                <Typography variant="h5">Delete account</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <DeleteUser
@@ -168,7 +169,7 @@ export default function Profile(props: Props) {
               <Grid
                 container
                 direction="row"
-                alignItems="center"
+                alignItems="flexStart"
                 justifyContent="center"
                 spacing={0.5}
               >
@@ -216,9 +217,15 @@ export default function Profile(props: Props) {
                             onClick={() =>
                               handleDeleteSaved(movie.title, movie.releaseYear)
                             }
+                            sx={{ marginRight: 2 }}
                           >
                             Remove
                           </Button>
+                          <Link
+                            href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
+                          >
+                            Learn more...
+                          </Link>
                         </CardActions>
                       </Card>
                     </Grid>

@@ -32,7 +32,10 @@ export function setCookie(
   key: string,
   value: Movie[] | CookieTestType[] | string,
 ) {
-  return Cookies.set(key, JSON.stringify(value));
+  return Cookies.set(key, JSON.stringify(value), {
+    sameSite: 'lax',
+    expires: 1,
+  });
 }
 
 export function deleteCookie(key: string) {

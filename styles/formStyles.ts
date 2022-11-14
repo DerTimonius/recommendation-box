@@ -12,10 +12,9 @@ export const formStyles = css`
     flex-direction: column;
     flex-direction: center;
     align-items: center;
-    margin: 50px;
     border-radius: 16px;
-    padding: 24px;
     gap: 8px;
+    padding: 12px;
   }
   input {
     width: 480px;
