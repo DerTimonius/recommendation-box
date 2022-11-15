@@ -14,11 +14,11 @@ test('register user, search for movies, get recommendations, save them and delet
   await page.locator(`[data-test-id="movie-register-link"]`).click();
   await expect(page).toHaveURL('http://localhost:3000/register');
   // register a user
-  await page.getByLabel('Username').fill('playwright_test_user');
+  await page.getByLabel('Username').fill('playwright_test_user2');
   await page
     .getByRole('textbox', { name: 'Password' })
-    .fill('playwright_test_user');
-  await page.getByLabel(`Confirm Password`).fill('playwright_test_user');
+    .fill('playwright_test_user2');
+  await page.getByLabel(`Confirm Password`).fill('playwright_test_user2');
   await page.locator(`[data-test-id="register-user"]`).click();
   await expect(page).toHaveURL('http://localhost:3000/profile');
   await page.locator(`[data-test-id="navigation-movies"]`).click();
@@ -58,7 +58,7 @@ test('register user, search for movies, get recommendations, save them and delet
     timeout: 100000,
   });
   await page.locator(`[data-test-id="profile-delete-account"]`).click();
-  await page.getByLabel('Enter your password').fill('playwright_test_user');
+  await page.getByLabel('Enter your password').fill('playwright_test_user2');
   await page.locator(`[data-test-id="delete-user-button"]`).click();
   await expect(page).toHaveURL('http://localhost:3000/');
 });

@@ -22,6 +22,7 @@ import { CSSObject, styled, Theme, ThemeProvider } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { AppProps } from 'next/app';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { User } from '../database/user';
@@ -104,7 +105,7 @@ function Anchor({ children, ...restProps }: any) {
 }
 function MyApp({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState<User | undefined>();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   function handleClick() {
     setOpen(!open);
   }
@@ -124,161 +125,78 @@ function MyApp({ Component, pageProps }: AppProps) {
     refreshUserProfile().catch(() => console.log('fetch api failed'));
   }, [refreshUserProfile]);
   return (
-    <ThemeProvider theme={customTheme}>
-      <div>
-        <Global
-          styles={css`
-            *,
-            *::before,
-            *::after {
-              margin: 0;
-              box-sizing: border-box;
-            }
-          `}
-        />
-        <Box sx={{ display: 'flex' }}>
-          <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleClick}
-                edge="start"
-                sx={{
-                  marginRight: 5,
-                  ...(open && { display: 'none' }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap component="div">
-                Super duper recommendations
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer variant="permanent" open={open}>
-            <DrawerHeader>
-              <IconButton onClick={handleClick}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <List>
-              <Link href="/">
-                <a data-test-id="navigation-home">
-                  <ListItem disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : 'auto',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <HomeIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Home"
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </a>
-              </Link>
-              <Link href="/movies">
-                <a data-test-id="navigation-movies">
-                  <ListItem disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : 'auto',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <OndemandVideoIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="Movies/TV shows"
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </a>
-              </Link>
-              <Link href="/about">
-                <a data-test-id="navigation-about">
-                  <ListItem disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : 'auto',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <LibraryBooksIcon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="How it works"
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </a>
-              </Link>
-            </List>
-            <Divider />
-            <List>
-              {user ? (
-                <>
-                  <Link href="/profile">
-                    <a data-test-id="navigation-profile">
-                      <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                          sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                          }}
-                        >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <SettingsIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary="Your Profile"
-                            sx={{ opacity: open ? 1 : 0 }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </a>
-                  </Link>
-                  <Anchor href="/logout" data-test-id="navigation-logout">
+    <>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icon-apple-touch.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
+      <ThemeProvider theme={customTheme}>
+        <div>
+          <Global
+            styles={css`
+              *,
+              *::before,
+              *::after {
+                margin: 0;
+                box-sizing: border-box;
+              }
+            `}
+          />
+          <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <AppBar position="fixed" open={open}>
+              <Toolbar>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={handleClick}
+                  edge="start"
+                  sx={{
+                    marginRight: 5,
+                    ...(open && { display: 'none' }),
+                  }}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Link href="/">
+                  <Typography
+                    variant="h3"
+                    noWrap
+                    component="div"
+                    sx={{
+                      fontSize: 36,
+                      /*   background:
+                        '-webkit-linear-gradient(45deg, #c33a4d 30%, #FF8E53 90%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent', */
+                      '& img': {
+                        display: 'inline-block',
+                        verticalAlign: 'middle',
+                      },
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                  >
+                    Rec
+                    <img src="/img/tv-logo.svg" alt="TV icon" />
+                    mmendationBox
+                  </Typography>
+                </Link>
+              </Toolbar>
+            </AppBar>
+            <Drawer variant="permanent" open={open}>
+              <DrawerHeader>
+                <IconButton onClick={handleClick}>
+                  <ChevronLeftIcon />
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              <List>
+                <Link href="/">
+                  <a data-test-id="navigation-home">
                     <ListItem disablePadding sx={{ display: 'block' }}>
                       <ListItemButton
                         sx={{
@@ -294,20 +212,103 @@ function MyApp({ Component, pageProps }: AppProps) {
                             justifyContent: 'center',
                           }}
                         >
-                          <LogoutIcon />
+                          <HomeIcon />
                         </ListItemIcon>
                         <ListItemText
-                          primary="Log Out"
+                          primary="Home"
                           sx={{ opacity: open ? 1 : 0 }}
                         />
                       </ListItemButton>
                     </ListItem>
-                  </Anchor>
-                </>
-              ) : (
-                <>
-                  <Link href="/login">
-                    <a data-test-id="navigation-login">
+                  </a>
+                </Link>
+                <Link href="/movies">
+                  <a data-test-id="navigation-movies">
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                      <ListItemButton
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <OndemandVideoIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Movies/TV shows"
+                          sx={{ opacity: open ? 1 : 0 }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </a>
+                </Link>
+                <Link href="/about">
+                  <a data-test-id="navigation-about">
+                    <ListItem disablePadding sx={{ display: 'block' }}>
+                      <ListItemButton
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <LibraryBooksIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="How it works"
+                          sx={{ opacity: open ? 1 : 0 }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </a>
+                </Link>
+              </List>
+              <Divider />
+              <List>
+                {user ? (
+                  <>
+                    <Link href="/profile">
+                      <a data-test-id="navigation-profile">
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : 'auto',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <SettingsIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="Your Profile"
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </a>
+                    </Link>
+                    <Anchor href="/logout" data-test-id="navigation-logout">
                       <ListItem disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
                           sx={{
@@ -323,59 +324,88 @@ function MyApp({ Component, pageProps }: AppProps) {
                               justifyContent: 'center',
                             }}
                           >
-                            <LoginIcon />
+                            <LogoutIcon />
                           </ListItemIcon>
                           <ListItemText
-                            primary="Log In"
+                            primary="Log Out"
                             sx={{ opacity: open ? 1 : 0 }}
                           />
                         </ListItemButton>
                       </ListItem>
-                    </a>
-                  </Link>
-                  <Link href="/register">
-                    <a data-test-id="navigation-register">
-                      <ListItem disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                          sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                          }}
-                        >
-                          <ListItemIcon
+                    </Anchor>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login">
+                      <a data-test-id="navigation-login">
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                          <ListItemButton
                             sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
+                              minHeight: 48,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
                             }}
                           >
-                            <SwitchAccountIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary="Sign Up"
-                            sx={{ opacity: open ? 1 : 0 }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </a>
-                  </Link>
-                </>
-              )}
-            </List>
-          </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <DrawerHeader />
-            <Component
-              {...pageProps}
-              className="main"
-              refreshUserProfile={refreshUserProfile}
-            />
-            {/* <Footer /> */}
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : 'auto',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <LoginIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="Log In"
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </a>
+                    </Link>
+                    <Link href="/register">
+                      <a data-test-id="navigation-register">
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : 'auto',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <SwitchAccountIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="Sign Up"
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </a>
+                    </Link>
+                  </>
+                )}
+              </List>
+            </Drawer>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+              <DrawerHeader />
+              <Component
+                {...pageProps}
+                className="main"
+                refreshUserProfile={refreshUserProfile}
+              />
+            </Box>
           </Box>
-        </Box>
-      </div>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
+    </>
   );
 }
 

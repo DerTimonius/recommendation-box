@@ -41,15 +41,6 @@ const movieStyles = css`
     margin: 12px;
     padding: 24px;
   }
-  li {
-    padding: 24px;
-    list-style-type: none;
-    border: 1px solid #b9e25e;
-    border-radius: 16px;
-  }
-  ul > li + li {
-    margin-top: 36px;
-  }
 `;
 
 // snake_case in release_year because of Python naming convention, where the data comes from
@@ -413,7 +404,12 @@ export default function Movies(props: Props) {
               </Box>
             </Grid>
           ) : null}
-          <Accordion sx={{ marginTop: 3 }}>
+          <Accordion
+            sx={{
+              marginTop:
+                selectedMovies.length > 0 && searchResult.length > 0 ? 3 : 36,
+            }}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-label="accordion-panel"

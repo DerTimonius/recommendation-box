@@ -171,7 +171,7 @@ export default function Profile(props: Props) {
                 direction="row"
                 alignItems="flexStart"
                 justifyContent="center"
-                spacing={0.5}
+                spacing={3}
               >
                 {savedRecommendations.map((movie) => {
                   return (
@@ -184,9 +184,12 @@ export default function Profile(props: Props) {
                     >
                       <Card
                         key={`saved movie ${movie.title}`}
+                        className="scrollable"
                         sx={{
                           width: 300,
                           background: 'rgba(255, 255, 255, 0.7)',
+                          height: 500,
+                          overflowY: 'scroll',
                         }}
                         variant="outlined"
                         data-test-id={`saved-movie-${movie.title}`}
@@ -221,11 +224,15 @@ export default function Profile(props: Props) {
                           >
                             Remove
                           </Button>
-                          <Link
-                            href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
-                          >
-                            Learn more...
-                          </Link>
+                          {movie.tmdbId ? (
+                            <Link
+                              href={`https://www.themoviedb.org/${movie.media}/${movie.tmdbId}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Learn more...
+                            </Link>
+                          ) : null}
                         </CardActions>
                       </Card>
                     </Grid>
@@ -272,6 +279,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const csrfToken = createTokenFromSecret(session.csrfToken);
+
   return {
     props: {
       user: user,

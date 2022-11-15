@@ -4,7 +4,7 @@ test('page navigation test', async ({ page }) => {
   await page.goto('http://localhost:3000/');
 
   // await expect(page.locator("h1")).toHaveText("I don't know yet");
-  await expect(page).toHaveTitle('Movie Recommendations');
+  await expect(page).toHaveTitle('RecommendationBox');
 
   await expect(page.locator(`[data-test-id="trending-card"]`)).toHaveCount(10);
   await page.locator(`[data-test-id="navigation-about"]`).click();
