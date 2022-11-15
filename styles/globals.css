@@ -1,27 +1,16 @@
 @font-face {
   font-family: 'Quicksand';
-  src: url(../assets/fonts/Quicksand-Bold.ttf);
-  src: url(../assets/fonts/Quicksand-Light.ttf);
-  src: url(../assets/fonts/Quicksand-Medium.ttf);
-  src: url(../assets/fonts/Quicksand-Regular.ttf);
-  src: url(../assets/fonts/Quicksand-SemiBold.ttf);
+  src: url(../public/fonts/Quicksand-Bold.ttf);
+  src: url(../public/fonts/Quicksand-Light.ttf);
+  src: url(../public/fonts/Quicksand-Medium.ttf);
+  src: url(../public/fonts/Quicksand-Regular.ttf);
+  src: url(../public/fonts/Quicksand-SemiBold.ttf);
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
-
-  /* background: linear-gradient(
-    180deg,
-    rgba(255, 191, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 100%
-  ); */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 243, 176, 1) 0%,
-    rgba(84, 11, 14, 1) 100%
-  );
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 1) 14%,
@@ -50,4 +39,15 @@ a {
     color: white;
     background: black;
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollable {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
