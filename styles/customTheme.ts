@@ -4,14 +4,14 @@ import { createTheme } from '@mui/material/styles';
 export const customTheme = createTheme({
   palette: {
     primary: {
-      main: '#283593',
+      main: '#263238',
     },
     warning: red,
     success: lightBlue,
     error: orange,
     info: blueGrey,
     secondary: {
-      main: '#c33a4d',
+      main: '#cc7f2a',
     },
   },
   shape: {

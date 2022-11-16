@@ -28,7 +28,7 @@ test('register user, search for movies, get recommendations, save them and delet
   await page.locator(`[data-test-id="search-movie"]`).click();
   await expect(
     page.locator(`[data-test-id^="search-result-movie"]`),
-  ).toHaveCount(7);
+  ).toHaveCount(7, { timeout: 30 * 1000 });
   await page.locator(`[data-test-id="add-search-result-The Expanse"]`).click();
   // check if the button is disabled after adding the movie/TV show to the selection
   await expect(
@@ -53,12 +53,15 @@ test('register user, search for movies, get recommendations, save them and delet
   await expect(page.getByLabel('Search Movie/TV Show')).toBeVisible();
 
   // delete the user again
-  await page.locator(`[data-test-id="navigation-profile"]`).click();
+  await page.locator(`[data-test-id="navigation-history"]`).click();
   await expect(page.locator(`[data-test-id^="saved-movie-"]`)).toHaveCount(3, {
     timeout: 100000,
   });
+  await page.locator(`[data-test-id="navigation-profile"]`).click();
   await page.locator(`[data-test-id="profile-delete-account"]`).click();
-  await page.getByLabel('Enter your password').fill('playwright_test_user2');
+  await page
+    .locator(`[data-test-id="delete-user-password"] input[type="password"]`)
+    .fill('playwright_test_user2');
   await page.locator(`[data-test-id="delete-user-button"]`).click();
   await expect(page).toHaveURL('http://localhost:3000/');
 });

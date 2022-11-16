@@ -96,7 +96,7 @@ export default function RecommendedMovies({
                           target="_blank"
                           rel="noreferrer"
                           underline="hover"
-                          color="secondary"
+                          color="primary"
                         >
                           Learn more at TMDb!
                         </MUILink>
@@ -132,7 +132,7 @@ export default function RecommendedMovies({
         startIcon={<SaveIcon />}
         onClick={handleSave}
         data-test-id="save-recommendations-button"
-        color="info"
+        color="primary"
       >
         Save to history!
       </Button>

@@ -44,8 +44,9 @@ export default function Home() {
             container
             spacing={2}
             sx={{
-              marginBottom: 12,
-              backgroundImage: 'url(/img/main2.jpg)',
+              marginTop: -5,
+              marginBottom: 5,
+              backgroundImage: 'url(/img/hero2.jpg)',
               backgroundRepeat: 'noRepeat',
               backgroundSize: 'cover',
               height: 680,
@@ -75,11 +76,27 @@ export default function Home() {
                 Choose up to 6 of your favourite movies and TV shows and get
                 recommendations!
               </Typography>
-              <Link href="/movies">
+              <Link href="/register">
                 <Button
                   color="primary"
                   variant="contained"
                   startIcon={<LiveTvIcon />}
+                  sx={{
+                    width: 480,
+                    marginBottom: 1,
+                    '@media (max-width: 720px)': {
+                      width: 240,
+                    },
+                  }}
+                >
+                  Sign up to get started!
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  endIcon={<LiveTvIcon />}
                   sx={{
                     width: 480,
                     '@media (max-width: 720px)': {
@@ -87,7 +104,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  Let's get started!
+                  Already have an account? Login here!
                 </Button>
               </Link>
             </Grid>
