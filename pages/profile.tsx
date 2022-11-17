@@ -106,7 +106,7 @@ export default function Profile(props: Props) {
                 <Typography variant="h5">Change username</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <ChangeUsername csrfToken={props.csrfToken} />
+                <ChangeUsername csrfToken={props.csrfToken} refreshUserProfile={props.refreshUserProfile} />
               </AccordionDetails>
             </Accordion>
             <Accordion

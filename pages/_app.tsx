@@ -168,10 +168,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                     component="div"
                     sx={{
                       fontSize: 36,
-                      /*   background:
-                        '-webkit-linear-gradient(45deg, #c33a4d 30%, #FF8E53 90%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent', */
                       '& img': {
                         display: 'inline-block',
                         verticalAlign: 'middle',
@@ -302,7 +298,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                               <HistoryIcon />
                             </ListItemIcon>
                             <ListItemText
-                              primary="Your history"
+                              primary="Your History"
                               sx={{ opacity: open ? 1 : 0 }}
                             />
                           </ListItemButton>

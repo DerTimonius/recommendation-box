@@ -7,6 +7,7 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
+import { validateInput } from '../utils/validateInput';
 
 type Props = {
   csrfToken: string | undefined;
@@ -25,6 +26,14 @@ export default function ChangePassword({ csrfToken }: Props) {
   ) {
     event.preventDefault();
     setErrors([]);
+    if (
+      !validateInput(newPassword) ||
+      !validateInput(password) ||
+      !validateInput(confirmedPassword)
+    ) {
+      setErrors([{ message: 'No spaces allowed in username or password' }]);
+      return;
+    }
     if (newPassword === confirmedPassword) {
       const response = await fetch('/api/user/changePassword', {
         method: 'PUT',

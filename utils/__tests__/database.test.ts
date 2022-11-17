@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 
+import { sql } from '../../database/connect';
 import {
   createUser,
   deleteUserById,
@@ -18,4 +19,6 @@ test('create, get and delete a user', async () => {
     expect(await deleteUserById(testUser.id)).not.toBe(undefined);
   }
   expect(await getUserByUsername(username)).toBe(undefined);
+  // close connection to the database
+  await sql.end();
 });

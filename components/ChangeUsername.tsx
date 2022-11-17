@@ -8,11 +8,16 @@ import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Error } from '../pages/api/register';
+import { validateInput } from '../utils/validateInput';
 
 type Props = {
   csrfToken: string | undefined;
+  refreshUserProfile: () => void;
 };
-export default function ChangeUsername({ csrfToken }: Props) {
+export default function ChangeUsername({
+  csrfToken,
+  refreshUserProfile,
+}: Props) {
   const [password, setPassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [errors, setErrors] = useState<Error[]>([]);
@@ -25,6 +30,10 @@ export default function ChangeUsername({ csrfToken }: Props) {
   ) {
     event.preventDefault();
     setErrors([]);
+    if (!validateInput(newUsername) || !validateInput(password)) {
+      setErrors([{ message: 'No spaces allowed in username or password' }]);
+      return;
+    }
     if (newUsername) {
       const response = await fetch('/api/user/changeUsername', {
         method: 'PUT',
@@ -43,6 +52,7 @@ export default function ChangeUsername({ csrfToken }: Props) {
         return;
       }
       setSaveSuccessful(true);
+      refreshUserProfile();
       return;
     }
     setErrors([{ message: 'no username passed' }]);
@@ -52,6 +62,9 @@ export default function ChangeUsername({ csrfToken }: Props) {
       <Typography variant="body1">
         Nothings lasts forever, not even usernames! But just to make sure,
         please enter your password.
+      </Typography>
+      <Typography variant="body2">
+        You might need to refresh the page to see the change!
       </Typography>
       <FormGroup>
         <form

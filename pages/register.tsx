@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { getSessionByToken } from '../database/sessions';
 import { User } from '../database/user';
 import { formStyles } from '../styles/formStyles';
+import { validateInput } from '../utils/validateInput';
 import { Error, RegisterResponseType } from './api/register';
 
 type Props = {
@@ -31,7 +32,17 @@ export default function Register({ refreshUserProfile }: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
-
+    if (
+      !validateInput(username) ||
+      !validateInput(password1) ||
+      !validateInput(password2)
+    ) {
+      setErrors([
+        ...errors,
+        { message: 'No space allowed in username or password!' },
+      ]);
+      return;
+    }
     if (password1 === password2) {
       const response = await fetch('/api/register', {
         method: 'POST',
