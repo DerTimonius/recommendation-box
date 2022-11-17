@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Head from 'next/head';
@@ -28,12 +29,16 @@ function About() {
         <hr />
         <Typography variant="body1">
           This is my final project for the UpLeveled Web Development Bootcamp.
-          What I tried to build was a movie recommendation system that two
-          persons can use.
+          What I tried to build was a movie recommendation system that takes
+          more than just one input and gives you the best fit.
         </Typography>
         <Typography variant="body1">
-          If they can't decide what movie or TV series to watch, each can pick
-          three movies/series of the kind they would like to watch.
+          So if you can't decide what movie or TV series to watch, just look for
+          a movie or TV show that you know and love!
+        </Typography>
+        <Typography variant="body1">
+          You can get really crazy results depending on your selection, it's
+          fun!
         </Typography>
         <br />
         <Typography variant="body1">
@@ -79,6 +84,19 @@ function About() {
         <Typography variant="body1">
           Also, I will at some point add the dataset for Disney+ into the mix.
         </Typography>
+        <Typography variant="h3" sx={{ margin: '16px 0 12px' }}>
+          Built by
+        </Typography>
+        <Typography variant="body2">© Timon Jurschitsch, 2022</Typography>
+        <br />
+        <Typography variant="body2">Reach out to me on Github:</Typography>
+        <Link
+          href="https://www.github.com/DerTimonius"
+          target="_blank"
+          rel="nonreferrer"
+        >
+          <GitHubIcon />
+        </Link>
       </div>
     </>
   );
