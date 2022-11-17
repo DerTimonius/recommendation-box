@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import { css, Global } from '@emotion/react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import HistoryIcon from '@mui/icons-material/History';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LoginIcon from '@mui/icons-material/Login';
@@ -167,10 +168,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                     component="div"
                     sx={{
                       fontSize: 36,
-                      /*   background:
-                        '-webkit-linear-gradient(45deg, #c33a4d 30%, #FF8E53 90%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent', */
                       '& img': {
                         display: 'inline-block',
                         verticalAlign: 'middle',
@@ -281,6 +278,33 @@ function MyApp({ Component, pageProps }: AppProps) {
               <List>
                 {user ? (
                   <>
+                    <Link href="/history">
+                      <a data-test-id="navigation-history">
+                        <ListItem disablePadding sx={{ display: 'block' }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : 'auto',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <HistoryIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="Your History"
+                              sx={{ opacity: open ? 1 : 0 }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      </a>
+                    </Link>
                     <Link href="/profile">
                       <a data-test-id="navigation-profile">
                         <ListItem disablePadding sx={{ display: 'block' }}>

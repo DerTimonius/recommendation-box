@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { User } from '../database/user';
 import { formStyles } from '../styles/formStyles';
+import { validateInput } from '../utils/validateInput';
 import { LoginResponseType } from './api/login';
 import { Error } from './api/register';
 
@@ -29,7 +30,13 @@ export default function Login({ refreshUserProfile }: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
-
+    if (!validateInput(username) || !validateInput(password)) {
+      setErrors([
+        ...errors,
+        { message: 'No space allowed in username or password!' },
+      ]);
+      return;
+    }
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {

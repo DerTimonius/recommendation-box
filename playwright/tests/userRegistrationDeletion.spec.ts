@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 test('register user, change preferences and password, and delete user', async ({
   page,
 }) => {
+  test.slow();
   await page.goto('http://localhost:3000');
   // register a user
   await page.locator(`[data-test-id="navigation-register"]`).click();
@@ -29,6 +30,7 @@ test('register user, change preferences and password, and delete user', async ({
   await expect(
     page.getByLabel('Exclude bollywood movies from search results'),
   ).toBeChecked();
+  await page.locator(`[data-test-id="profile-preferences"]`).click();
 
   // change the password
   await page.locator(`[data-test-id="profile-change-password"]`).click();
@@ -43,10 +45,13 @@ test('register user, change preferences and password, and delete user', async ({
   await expect(
     page.locator(`[data-test-id="change-password-button"]`),
   ).toHaveText('Saved');
+  await page.locator(`[data-test-id="profile-change-password"]`).click();
 
   // delete the fake user again
   await page.locator(`[data-test-id="profile-delete-account"]`).click();
-  await page.getByLabel('Enter your password').fill('changed_password');
+  await page
+    .locator(`[data-test-id="delete-user-password"] input[type="password"]`)
+    .fill('changed_password');
   await page.locator(`[data-test-id="delete-user-button"]`).click();
   await expect(page).toHaveURL('http://localhost:3000/');
 });

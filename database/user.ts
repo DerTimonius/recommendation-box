@@ -114,6 +114,20 @@ export async function updatePasswordById(
   RETURNING *`;
   return user;
 }
+
+export async function updateUsernameById(id: User['id'], newName: string) {
+  const [user] = await sql<User[]>`
+  UPDATE
+    users
+  SET
+    username = ${newName}
+  WHERE
+    id = ${id}
+  RETURNING
+    id,
+    username`;
+  return user;
+}
 export async function deleteUserById(id: User['id']) {
   const [user] = await sql<User[]>`
   DELETE FROM

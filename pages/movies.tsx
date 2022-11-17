@@ -259,6 +259,7 @@ export default function Movies(props: Props) {
                           <Card
                             key={`movie_index ${movie.index}`}
                             data-test-id={`search-result-movie-${movie.title}`}
+                            sx={{marginBottom: 0.5}}
                           >
                             <CardContent>
                               <Typography variant="h6">

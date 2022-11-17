@@ -23,14 +23,7 @@ export default function TrendingCard({ movie }: Props) {
         image={`https://image.tmdb.org/t/p/original${movie.backdrop}`}
       />
       <CardContent data-test-id="trending-card">
-        {movie.title !== movie.originalTitle ? (
-          <>
-            <Typography variant="h5">{movie.originalTitle}</Typography>
-            <Typography variant="subtitle1">{movie.title}</Typography>
-          </>
-        ) : (
-          <Typography variant="h5">{movie.title}</Typography>
-        )}
+        <Typography variant="h5">{movie.title}</Typography>
       </CardContent>
       <CardActions>
         <MUILink
@@ -48,6 +41,12 @@ export default function TrendingCard({ movie }: Props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto">
         <CardContent>
+          {movie.title !== movie.originalTitle ? (
+            <Typography variant="subtitle1">
+              Original: {movie.originalTitle}
+            </Typography>
+          ) : null}
+
           <Typography variant="body1">{movie.overview}</Typography>
         </CardContent>
       </Collapse>
