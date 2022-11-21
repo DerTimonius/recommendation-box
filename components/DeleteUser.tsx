@@ -38,7 +38,7 @@ export default function DeleteUser({ refreshUserProfile, csrfToken }: Props) {
       setErrors([...errors, data.errors]);
       return;
     }
-    await router.push('/');
+    await router.push('/logout');
     refreshUserProfile();
   }
   return (

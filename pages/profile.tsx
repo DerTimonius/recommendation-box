@@ -52,7 +52,9 @@ export default function Profile(props: Props) {
                 id="change-preferences"
                 data-test-id="profile-preferences"
               >
-                <Typography variant="h5">Change preferences</Typography>
+                <Typography variant="h5">
+                  Change Bollywood preferences
+                </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography>
@@ -106,7 +108,10 @@ export default function Profile(props: Props) {
                 <Typography variant="h5">Change username</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <ChangeUsername csrfToken={props.csrfToken} refreshUserProfile={props.refreshUserProfile} />
+                <ChangeUsername
+                  csrfToken={props.csrfToken}
+                  refreshUserProfile={props.refreshUserProfile}
+                />
               </AccordionDetails>
             </Accordion>
             <Accordion

@@ -2,9 +2,7 @@
 
 This is the repository for my final project while attending the UpLeveled Bootcamp.
 
-The main idea behind this application was to build a movie recommendation system that allows for more than one input
-
-When progressing in this project, this Readme will be revised multiple times.
+The main idea behind this application was to build a movie recommendation system that allows for more than one input and get the best pick that suits the input the most. The recommendation system was built from scratch, using datasets from [kaggle.com](https://www.kaggle.com), in Python. The recommendation system is accessed via a seperate [Django API](https://github.com/DerTimonius/recommendation-box-django)
 
 ## Table of contents
 
@@ -12,6 +10,7 @@ When progressing in this project, this Readme will be revised multiple times.
 2. [Installation guide](#installation-guide)
 3. [Setting up the database](#setting-up-the-database)
 4. [Run the dev server](#run-the-dev-server)
+5. [Screenshots](#screenshots)
 
 ## Technologies used
 
@@ -21,9 +20,11 @@ When progressing in this project, this Readme will be revised multiple times.
   - Pandas
   - Numpy
   - Sci-kit learn
+  - Django API
 - PostgreSQL
-- (Jest, Playwright)
+- Jest, Playwright
 - Fly.io
+- Docker
 
 ## Installation guide
 
@@ -120,3 +121,5 @@ or, when using npm:
 ```
 npm run dev
 ```
+
+## Screenshots

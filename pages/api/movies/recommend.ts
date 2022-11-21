@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken } from '../../../database/sessions';
 import { getUserByToken } from '../../../database/user';
-import { checkRecommendations } from '../../../utils/connect_to_python';
 import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
 import getMovieDetails from '../../../utils/details';
+import { recommendFromDjango } from '../../../utils/getFromDjango';
 import { RecommendedMovie } from '../../movies';
 
 export default async function handler(
@@ -43,12 +43,12 @@ export default async function handler(
       .json({ errors: { message: 'Invalid CSRF token, you hacker!' } });
   }
   // get the selected movies from the request body
-  const selectedMovies = request.body.selectedMovies;
+  const selectedMovies: number[] = request.body.selectedMovies;
   const options = request.body.options;
   if (
-    !selectedMovies ||
+    selectedMovies.length === 0 ||
     !options ||
-    typeof selectedMovies !== 'string' ||
+    !Array.isArray(selectedMovies) ||
     typeof options !== 'string'
   ) {
     return response.status(400).json({
@@ -57,22 +57,21 @@ export default async function handler(
   }
   const numberOfMovies: number = request.body.wantedNumber;
   if (!numberOfMovies) {
-    return response
-      .status(400)
-      .json({
-        errors: { message: 'Wanted number of recommendations missing' },
-      });
+    return response.status(400).json({
+      errors: { message: 'Wanted number of recommendations missing' },
+    });
   }
-  const result: RecommendedMovie[] = JSON.parse(
-    await checkRecommendations(
-      selectedMovies,
-      options,
-      user.preferences,
-      numberOfMovies,
-    ),
+  // get the data by connecting to external Django API
+
+  const dataFromAPI: RecommendedMovie[] = await recommendFromDjango(
+    selectedMovies,
+    options,
+    user.preferences,
+    numberOfMovies,
   );
+  // add further details to be displayed later
   const resultArray = await Promise.all(
-    result.map(async (movie) => {
+    dataFromAPI.map(async (movie) => {
       const data = await getMovieDetails(movie.title, movie.release_year);
       if (data) {
         return {

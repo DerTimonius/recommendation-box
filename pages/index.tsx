@@ -66,6 +66,7 @@ export default function Home() {
                 backdropFilter: 'blur(8px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 6,
+                color: 'white',
               }}
             >
               <Typography variant="h2">Don't know what to watch?</Typography>

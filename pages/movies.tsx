@@ -105,6 +105,7 @@ export default function Movies(props: Props) {
       }),
     });
     const data = await response.json();
+    console.log(data);
     setSearchResult(data.result);
     setIsSearching(false);
     setSearchInput('');
@@ -119,7 +120,7 @@ export default function Movies(props: Props) {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        selectedMovies: selectedMoviesIndex.join(' '),
+        selectedMovies: selectedMoviesIndex,
         csrfToken: props.csrfToken,
         options: options,
         wantedNumber: wantedNumberOfMovies,
@@ -259,7 +260,7 @@ export default function Movies(props: Props) {
                           <Card
                             key={`movie_index ${movie.index}`}
                             data-test-id={`search-result-movie-${movie.title}`}
-                            sx={{marginBottom: 0.5}}
+                            sx={{ marginBottom: 0.5 }}
                           >
                             <CardContent>
                               <Typography variant="h6">

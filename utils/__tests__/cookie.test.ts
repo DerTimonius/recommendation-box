@@ -1,10 +1,5 @@
-import { deleteCookie, getCookie, setCookie } from '../cookie';
+import { CookieTestType, deleteCookie, getCookie, setCookie } from '../cookie';
 
-export type CookieTestType = {
-  name: string;
-  type: string;
-  available: string;
-};
 test('get, set and delete cookies', () => {
   const cookieValue1 = '123';
   const cookieKey1 = 'abc';

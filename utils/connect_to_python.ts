@@ -1,6 +1,5 @@
+import path from 'node:path';
 import { execaCommand } from 'execa';
-
-// const { execaCommand } = require('execa');
 
 export async function checkRecommendations(
   selectedMovieIds: string,
@@ -9,13 +8,15 @@ export async function checkRecommendations(
   numberOfMovies: number,
 ) {
   const { stdout } = await execaCommand(
-    `python ./utils/python/recommend.py ${selectedMovieIds} ${numberOfMovies} ${options} ${preferences}`,
+    `python3 ${path.normalize(
+      './scripts/python/recommend.py',
+    )} ${selectedMovieIds} ${numberOfMovies} ${options} ${preferences}`,
   );
   return stdout;
 }
 export async function checkSearch(searchItem: string) {
   const { stdout } = await execaCommand(
-    `python ./utils/python/search.py ${searchItem}`,
+    `python3 ${path.normalize('./scripts/python/search.py')} ${searchItem}`,
   );
   return stdout;
 }
