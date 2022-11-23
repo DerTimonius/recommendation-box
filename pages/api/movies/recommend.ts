@@ -63,12 +63,17 @@ export default async function handler(
   }
   // get the data by connecting to external Django API
 
-  const dataFromAPI: RecommendedMovie[] = await recommendFromDjango(
+  const dataFromAPI: RecommendedMovie[] | undefined = await recommendFromDjango(
     selectedMovies,
     options,
     user.preferences,
     numberOfMovies,
   );
+  if (!dataFromAPI) {
+    return response
+      .status(503)
+      .json({ errors: { message: 'Django did not respond well' } });
+  }
   // add further details to be displayed later
   const resultArray = await Promise.all(
     dataFromAPI.map(async (movie) => {

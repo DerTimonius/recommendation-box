@@ -34,5 +34,10 @@ export default async function handler(
   const searchItem = request.body.searchItem;
   // get the data by connecting to external Django API
   const data = await searchFromDjango(searchItem);
+  if (!data) {
+    return response
+      .status(503)
+      .json({ errors: { message: 'Django did not respond well' } });
+  }
   return response.status(200).json({ result: data });
 }

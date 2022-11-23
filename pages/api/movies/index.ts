@@ -32,6 +32,9 @@ type CompleteMovieResponseType =
     }
   | { media_type: 'person' };
 
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 30 * 1000);
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse,
@@ -39,7 +42,9 @@ export default async function handler(
   if (request.method === 'GET') {
     const res = await fetch(
       `https://api.themoviedb.org/3/trending/all/day?api_key=${process.env.TMDB_API_KEY}`,
+      { signal: controller.signal },
     );
+    clearTimeout(timeoutId);
     const data = await res.json();
     // was the fetching successful? (data.success only exists in API response on failed queries)
     if (!data.success) {

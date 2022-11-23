@@ -31,6 +31,7 @@ import RecommendedMovies from '../components/RecommendedMovies';
 import { getSessionByToken } from '../database/sessions';
 import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
 import { createTokenFromSecret } from '../utils/csrf';
+import { Error } from './api/register';
 
 const movieStyles = css`
   display: flex;
@@ -76,6 +77,8 @@ export default function Movies(props: Props) {
   const [isRecommending, setIsRecommending] = useState(false);
   const [options, setOptions] = useState('both');
   const [wantedNumberOfMovies, setWantedNumberOfMovies] = useState<number>(3);
+  const [errors, setErrors] = useState<Error[]>([]);
+  const [saveSuccessful, setSaveSuccessful] = useState(false);
 
   if (!props.csrfToken) {
     deleteCookie('selectedMovie');
@@ -92,6 +95,7 @@ export default function Movies(props: Props) {
       | React.MouseEvent<HTMLButtonElement>,
   ) {
     event.preventDefault();
+    setErrors([]);
     setSearchResult([]);
     setIsSearching(true);
     const response = await fetch('/api/movies/search', {
@@ -104,6 +108,16 @@ export default function Movies(props: Props) {
         searchItem: searchInput,
       }),
     });
+    if (response.status === 500) {
+      setErrors([
+        ...errors,
+        {
+          message:
+            'Oops, looks like something went wrong :( Please refresh the page and try again!',
+        },
+      ]);
+      return;
+    }
     const data = await response.json();
     console.log(data);
     setSearchResult(data.result);
@@ -111,6 +125,7 @@ export default function Movies(props: Props) {
     setSearchInput('');
   }
   async function handleRecommendations() {
+    setErrors([]);
     setRecommendedMovies([]);
     setIsRecommending(true);
     const selectedMoviesIndex = selectedMovies.map((movie) => movie.index);
@@ -126,6 +141,16 @@ export default function Movies(props: Props) {
         wantedNumber: wantedNumberOfMovies,
       }),
     });
+    if (response.status === 500) {
+      setErrors([
+        ...errors,
+        {
+          message:
+            'Oops, looks like something went wrong :( Please refresh the page and try again!',
+        },
+      ]);
+      return;
+    }
     const data = await response.json();
     setRecommendedMovies(data.result);
     setIsRecommending(false);
@@ -160,6 +185,7 @@ export default function Movies(props: Props) {
       }),
     });
     const data = await response.json();
+    setSaveSuccessful(true);
     return data;
   }
   return (
@@ -184,6 +210,7 @@ export default function Movies(props: Props) {
               setSearchResult={setSearchResult}
               deleteCookie={deleteCookie}
               handleSave={handleSave}
+              saveSuccessful={saveSuccessful}
             />
           ) : // if the array is not empty, check if the page is currently looking for recommendations
           isRecommending ? (
@@ -302,6 +329,13 @@ export default function Movies(props: Props) {
                 )}
               </div>
             </Grid>
+          )}
+          {/* show errors if something went wrong during the fetching */}
+          {errors.length > 0 && (
+            <Typography variant="h4">
+              Oops, looks like something went wrong :( Please reload the page
+              and try again!
+            </Typography>
           )}
           {/* show the sidebar on the left only if a movie has already been selected d*/}
           {selectedMovies.length > 0 ? (
