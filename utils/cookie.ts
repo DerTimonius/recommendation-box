@@ -2,10 +2,13 @@ import cookie from 'cookie';
 import Cookies from 'js-cookie';
 import { Session } from '../database/sessions';
 import { Movie } from '../pages/movies';
-import { CookieTestType } from './__tests__/cookie.test';
 
 const isProduction = process.env.NODE_ENV === 'production';
-
+export type CookieTestType = {
+  name: string;
+  type: string;
+  available: string;
+};
 export function createSessionCookie(token: Session['token']) {
   return cookie.serialize('sessionToken', token, {
     httpOnly: true,

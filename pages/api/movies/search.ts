@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken } from '../../../database/sessions';
-import { checkSearch } from '../../../utils/connect_to_python';
 import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
+import { searchFromDjango } from '../../../utils/getFromDjango';
 
 export default async function handler(
   request: NextApiRequest,
@@ -32,6 +32,12 @@ export default async function handler(
       .json({ errors: { message: 'Invalid CSRF token, you hacker!' } });
   }
   const searchItem = request.body.searchItem;
-  const result = JSON.parse(await checkSearch(searchItem));
-  return response.status(200).json({ result: result });
+  // get the data by connecting to external Django API
+  const data = await searchFromDjango(searchItem);
+  if (!data) {
+    return response
+      .status(503)
+      .json({ errors: { message: 'Django did not respond well' } });
+  }
+  return response.status(200).json({ result: data });
 }

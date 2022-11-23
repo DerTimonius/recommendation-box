@@ -93,8 +93,12 @@ def get_best_movie_rec(movie_input_id_list, number_of_movies, options, preferenc
   return json.dumps(output, allow_nan=True)
 
 
-movie_list = sys.argv[1:-3]
-number_of_movies = sys.argv[-3]
-options = sys.argv[-2]
-preferences = sys.argv[-1]
-print(get_best_movie_rec(movie_list, number_of_movies, options, preferences))
+def display_results():
+  movie_list = sys.argv[1:-3]
+  number_of_movies = sys.argv[-3]
+  options = sys.argv[-2]
+  preferences = sys.argv[-1]
+  print(get_best_movie_rec(movie_list, number_of_movies, options, preferences))
+
+if __name__ == "__main__":
+  display_results()

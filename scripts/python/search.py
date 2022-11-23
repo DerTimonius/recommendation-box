@@ -34,5 +34,9 @@ def search(title):
   output = [{"title":df_combined["title"].iloc[i], "release_year": int(df_combined["release_year"].iloc[i]), "cast": str(df_combined["cast"].iloc[i])[:75] + "...", "index": int(i)} for i in indices[::-1]]
   return json.dumps(output, allow_nan=True)
 
-title = sys.argv[1:]
-print(search(" ".join(title)))
+def display_results():
+  title = sys.argv[1:]
+  print(search(" ".join(title)))
+
+if __name__ == "__main__":
+  display_results()

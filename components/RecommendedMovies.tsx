@@ -1,3 +1,4 @@
+import DoneIcon from '@mui/icons-material/Done';
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import SaveIcon from '@mui/icons-material/Save';
 import Box from '@mui/material/Box';
@@ -17,6 +18,7 @@ type Props = {
   setSearchResult: (movies: Movie[]) => void;
   deleteCookie: (key: string) => void;
   handleSave: () => Promise<any>;
+  saveSuccessful: boolean;
 };
 export default function RecommendedMovies({
   recommendedMovies,
@@ -25,6 +27,7 @@ export default function RecommendedMovies({
   setSearchResult,
   deleteCookie,
   handleSave,
+  saveSuccessful,
 }: Props) {
   return (
     <Grid item xs={10} lg={9}>
@@ -129,12 +132,12 @@ export default function RecommendedMovies({
       </Button>
       <Button
         variant="contained"
-        startIcon={<SaveIcon />}
+        startIcon={saveSuccessful ? <DoneIcon /> : <SaveIcon />}
         onClick={handleSave}
         data-test-id="save-recommendations-button"
         color="primary"
       >
-        Save to history!
+        {saveSuccessful ? <>Saved</> : <>Save to history!</>}
       </Button>
     </Grid>
   );

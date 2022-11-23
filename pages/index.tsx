@@ -10,14 +10,15 @@ import TrendingCard from '../components/TrendingCard';
 import styles from '../styles/Home.module.css';
 import { TrendingMovieType } from './api/movies';
 
+async function fetchTrendingData() {
+  const response = await fetch('/api/movies');
+  const data = await response.json();
+  return data;
+}
+
 export default function Home() {
-  const [trending, setTrending] = useState<TrendingMovieType[]>([]);
+  const [trending, setTrending] = useState<TrendingMovieType[]>();
   const [loading, setLoading] = useState(false);
-  async function fetchTrendingData() {
-    const response = await fetch('/api/movies');
-    const data = await response.json();
-    return data;
-  }
   useEffect(() => {
     setLoading(true);
     setTrending([]);
@@ -66,6 +67,7 @@ export default function Home() {
                 backdropFilter: 'blur(8px)',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 padding: 6,
+                color: 'white',
               }}
             >
               <Typography variant="h2">Don't know what to watch?</Typography>
