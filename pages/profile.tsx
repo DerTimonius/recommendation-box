@@ -1,10 +1,13 @@
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import LiveTvIcon from '@mui/icons-material/LiveTv';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import ChangePassword from '../components/ChangePassword';
 import ChangeUsername from '../components/ChangeUsername';
 import DeleteUser from '../components/DeleteUser';
@@ -140,6 +143,20 @@ export default function Profile(props: Props) {
             </Accordion>
           </div>
           <hr />
+          <Link href="/movies">
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<LiveTvIcon />}
+              sx={{
+                margin: '48px auto',
+                height: 36,
+                width: 320,
+              }}
+            >
+              Go to recommendations!
+            </Button>
+          </Link>
         </main>
       </>
     );

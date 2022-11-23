@@ -2,7 +2,9 @@
 
 This is the repository for my final project while attending the UpLeveled Bootcamp.
 
-The main idea behind this application was to build a movie recommendation system that allows for more than one input and get the best pick that suits the input the most. The recommendation system was built from scratch, using datasets from [kaggle.com](https://www.kaggle.com), in Python. The recommendation system is accessed via a seperate [Django API](https://github.com/DerTimonius/recommendation-box-django)
+The main idea behind this application was to build a movie recommendation system that allows for more than one input and get the best pick that suits the input the most. The recommendation system was built from scratch, using datasets from [kaggle.com](https://www.kaggle.com), in Python. The recommendation system is accessed via a seperate [Django API](https://github.com/DerTimonius/recommendation-box-django).
+
+The user can, after registration, pick up to six different movies and TV shows and get the recommendation system started! Have fun!
 
 ## Table of contents
 
@@ -10,7 +12,8 @@ The main idea behind this application was to build a movie recommendation system
 2. [Installation guide](#installation-guide)
 3. [Setting up the database](#setting-up-the-database)
 4. [Run the dev server](#run-the-dev-server)
-5. [Screenshots](#screenshots)
+5. [Deployment](#deployment)
+6. [Screenshots](#screenshots)
 
 ## Technologies used
 
@@ -122,4 +125,14 @@ or, when using npm:
 npm run dev
 ```
 
+## Deployment
+
+This app has been dockerized and deployed on fly.io.
+
 ## Screenshots
+
+Search functionality:
+![Screenshot of search functionality](/screenshots/screenshot-1.png)
+
+Recommended Movies:
+![Screenshot of recommended movies](/screenshots/screenshot-2.png)
