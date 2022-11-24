@@ -8,7 +8,6 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getSessionByToken } from '../database/sessions';
 import { getUserByToken, User } from '../database/user';
@@ -108,7 +107,7 @@ export default function History(props: Props) {
                           {movie.title} ({movie.releaseYear})
                         </Typography>
                         {movie.poster ? (
-                          <Image
+                          <img
                             src={`https://image.tmdb.org/t/p/original${movie.poster}`}
                             height={250}
                             width={180}

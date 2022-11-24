@@ -58,7 +58,7 @@ export default function RecommendedMovies({
                         {movie.title} ({movie.release_year})
                       </Typography>
                       {movie.poster ? (
-                        <Image
+                        <img
                           src={`https://image.tmdb.org/t/p/original${movie.poster}`}
                           height={400}
                           width={300}
