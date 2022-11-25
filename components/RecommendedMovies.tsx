@@ -8,7 +8,6 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import MUILink from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import Image from 'next/image';
 import { Movie, RecommendedMovie } from '../pages/movies';
 
 type Props = {

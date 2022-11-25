@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken } from '../../../database/sessions';
 import {
   getUserByToken,
+  getUserByUsername,
   getUserWithPasswordByUsername,
   updateUsernameById,
 } from '../../../database/user';
@@ -65,6 +66,13 @@ export default async function handler(
     return response
       .status(400)
       .json({ errors: { message: 'Invalid username input' } });
+  }
+  // does a user with the same username already exist?
+  const existingUser = await getUserByUsername(newUsername);
+  if (existingUser) {
+    return response
+      .status(401)
+      .json({ errors: { message: 'Sorry, this username is already taken.' } });
   }
   // call the database to update the username
   const newUserInfo = await updateUsernameById(fullUser.id, newUsername);
