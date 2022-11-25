@@ -136,3 +136,6 @@ Search functionality:
 
 Recommended Movies:
 ![Screenshot of recommended movies](/screenshots/screenshot-2.png)
+
+DrawSQL schema:
+![Screenshot of DrawSQL schema](/screenshots/drawsql.png)
