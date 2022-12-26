@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LiveTvIcon from '@mui/icons-material/LiveTv';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import SearchIcon from '@mui/icons-material/Search';
+import { Link } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -198,6 +199,18 @@ export default function Movies(props: Props) {
         />
       </Head>
 
+      <div style={{ marginBottom: 150 }}>
+        <Typography variant="h1">
+          This service is currently unaivalable!
+        </Typography>
+        <Typography variant="subtitle1">
+          If you want to use it locally, follow the instructions of the{' '}
+          <Link href="https://github.com/DerTimonius/recommendation-box/blob/main/README.md">
+            {' '}
+            GitHub Repo README.
+          </Link>
+        </Typography>
+      </div>
       {/* check if the user is logged in or not */}
       {!('errors' in props) ? (
         <Grid container>

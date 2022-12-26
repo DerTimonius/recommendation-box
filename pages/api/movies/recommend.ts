@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSessionByToken } from '../../../database/sessions';
 import { getUserByToken } from '../../../database/user';
+import { checkRecommendations } from '../../../utils/connect_to_python';
 import { validateTokenFromCsrfSecret } from '../../../utils/csrf';
 import getMovieDetails from '../../../utils/details';
 import { recommendFromDjango } from '../../../utils/getFromDjango';
@@ -61,8 +62,18 @@ export default async function handler(
       errors: { message: 'Wanted number of recommendations missing' },
     });
   }
-  // get the data by connecting to external Django API
 
+  // if you want to use this application locally, comment out the following lines of code and remove lines 77-82
+  /* const dataFromAPI: RecommendedMovie[] | undefined = JSON.parse(
+    await checkRecommendations(
+      selectedMovies.join(' '),
+      options,
+      user.preferences,
+      numberOfMovies,
+    ),
+  ); */
+
+  // get the data by connecting to external Django API
   const dataFromAPI: RecommendedMovie[] | undefined = await recommendFromDjango(
     selectedMovies,
     options,

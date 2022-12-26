@@ -6,6 +6,8 @@ The main idea behind this application was to build a movie recommendation system
 
 The user can, after registration, pick up to six different movies and TV shows and get the recommendation system started! Have fun!
 
+I have taken down the server for the Django API, so the application won't work online. But I added a few things to the [Installation Guide](#installation-guide) of the README so that you can use it locally without the need to connect to the Django API.
+
 ## Table of contents
 
 1. [Technologies used](#technologies-used)
@@ -14,6 +16,7 @@ The user can, after registration, pick up to six different movies and TV shows a
 4. [Run the dev server](#run-the-dev-server)
 5. [Deployment](#deployment)
 6. [Screenshots](#screenshots)
+7. [Running it locally](#running-it-locally)
 
 ## Technologies used
 
@@ -139,3 +142,20 @@ Recommended Movies:
 
 DrawSQL schema:
 ![Screenshot of DrawSQL schema](/screenshots/drawsql.png)
+
+## Running it locally
+
+Since I took down the Django API, you have to do some changes to the codebase to get it working on your local machine.
+
+In two files ([pages/api/movies/search](/pages/api/movies/search.ts) and [pages/api/movies/recommend](/pages/api/movies/recommend.ts)) I provided a different method of how to connect JS to Python.
+For example in the `search` file you will find this:
+
+```ts
+// if you want to use this application locally, comment out the following line of code and remove line 41
+// const data = JSON.parse(await checkSearch(searchItem));
+
+// get the data by connecting to external Django API
+const data = await searchFromDjango(searchItem);
+```
+
+and something similar in the `recommend` file.
