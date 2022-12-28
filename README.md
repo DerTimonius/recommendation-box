@@ -110,6 +110,23 @@ CREATE USER <user name> WITH ENCRYPTED PASSWORD '<user password>';
 GRANT ALL PRIVILEGES ON DATABASE <database name> TO <user name>;
 ```
 
+<details>
+<summary>
+If you are using PostgreSQL15 you need to perform the following steps as well: </summary>
+Right after the previous three commands, while still being the super user:
+
+```bash
+\c <database name> postgres
+```
+
+Now you're connected to your database as the super user. This is necessary for you to grant permission to the public schema to your newly created user:
+
+```bash
+GRANT ALL ON SCHEMA public TO <user name>;
+```
+
+</details>
+
 Before you can do migrations, you have to create a `.env` file. Check the `.env.example` file for reference.
 
 If everything is setup, either after closing postgres or in a separate terminal window, you can run `yarn migrate up` or `npm run migrate up` to create the necessary tables. Check postgres by using `SELECT * FROM users;` to make sure it worked.
